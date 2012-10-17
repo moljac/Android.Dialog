@@ -5,22 +5,13 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class CheckboxElement : Element, CompoundButton.IOnCheckedChangeListener
+    public class CheckboxElement : BoolElement, CompoundButton.IOnCheckedChangeListener
     {
-        public bool Value
+        protected override void UpdateDetailDisplay(View cell)
         {
-            get { return _val; }
-            set
-            {
-                bool emit = _val != value;
-                _val = value;
-                if (_checkbox != null && _checkbox.Checked != _val)
-                    _checkbox.Checked = _val;
-                else if (emit && Changed != null)
-                    Changed(this, EventArgs.Empty);
-            }
+            if (_checkbox != null && _checkbox.Checked != Value)
+                _checkbox.Checked = Value;
         }
-        private bool _val;
 
         public string SubCaption { get; set; }
 
@@ -30,8 +21,6 @@ namespace Android.Dialog
             set;
         }
 
-        public event EventHandler Changed;
-
         private CheckBox _checkbox;
         private TextView _caption;
         private TextView _subCaption;
@@ -39,40 +28,36 @@ namespace Android.Dialog
         public string Group;
 
         public CheckboxElement(string caption)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_boolfieldright)
+            : base(caption, false, (int)DroidResources.ElementLayout.dialog_boolfieldright)
         {
 
         }
 
         public CheckboxElement(string caption, bool value)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_boolfieldright)
+            : base(caption, value, (int)DroidResources.ElementLayout.dialog_boolfieldright)
         {
-            Value = value;
         }
 
         public CheckboxElement(string caption, bool value, string subCaption, string group)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_boolfieldsubright)
+            : base(caption, value, (int)DroidResources.ElementLayout.dialog_boolfieldsubright)
         {
-            Value = value;
             Group = group;
             SubCaption = subCaption;
         }
 
         public CheckboxElement(string caption, bool value, string group)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_boolfieldright)
+            : base(caption, value, (int)DroidResources.ElementLayout.dialog_boolfieldright)
         {
-            Value = value;
             Group = group;
         }
 
         public CheckboxElement(string caption, bool value, string group, int layoutId)
-            : base(caption, layoutId)
+            : base(caption, value, layoutId)
         {
-            Value = value;
             Group = group;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             View checkboxView;
             View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId, out _caption, out _subCaption, out checkboxView);
@@ -96,7 +81,7 @@ namespace Android.Dialog
 
         public void OnCheckedChanged(CompoundButton buttonView, bool isChecked)
         {
-            Value = isChecked;
+            OnUserValueChanged(isChecked);
         }
 
         public override void Selected()

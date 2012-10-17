@@ -6,28 +6,29 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class FloatElement : Element, SeekBar.IOnSeekBarChangeListener
+    public class FloatElement : ValueElement<float>, SeekBar.IOnSeekBarChangeListener
     {
         private const int precision = 10000000;
         public bool ShowCaption;
-        private int _value, _maxValue, _minValue;
-
-        public float Value
-        {
-            get { return (float)_value / precision; }
-            set { _value = (int)(value * precision); }
-        }
+        private float _maxValue, _minValue;
+        SeekBar slider;
 
         public float MaxValue
         {
-            get { return (float)_maxValue / precision; }
-            set { _maxValue = (int)(value * precision); }
+            get { return _maxValue; }
+            set { _maxValue = value; }
         }
 
         public float MinValue
         {
-            get { return (float)_minValue / precision; }
-            set { _minValue = (int)(value * precision); }
+            get { return _minValue; }
+            set { _minValue = value; }
+        }
+
+        protected override void UpdateDetailDisplay(View cell)
+        {
+            if (slider != null)
+                slider.Progress = (int)(Value - _minValue) * precision;
         }
 
         public Bitmap Left;
@@ -60,14 +61,13 @@ namespace Android.Dialog
             Left = left;
             Right = right;
             MinValue = 0;
-            MaxValue = 1;
+            MaxValue = precision;
             Value = value;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             TextView label;
-            SeekBar slider;
             ImageView left;
             ImageView right;
 
@@ -89,8 +89,8 @@ namespace Android.Dialog
                     else
                         right.Visibility = ViewStates.Gone;
                 }
-                slider.Max = _maxValue - _minValue;
-                slider.Progress = _value - _minValue;
+                slider.Max = (int)(_maxValue - _minValue) * precision;
+                slider.Progress = (int)(Value - _minValue) * precision;
                 slider.SetOnSeekBarChangeListener(this);
                 if (label != null)
                 {
@@ -102,7 +102,7 @@ namespace Android.Dialog
             }
             else
             {
-                Util.Log.Error("FloatElement", "GetView failed to load template view");
+                Util.Log.Error("FloatElement", "GetViewImpl failed to load template view");
             }
 
             return view;
@@ -115,7 +115,7 @@ namespace Android.Dialog
 
         void SeekBar.IOnSeekBarChangeListener.OnProgressChanged(SeekBar seekBar, int progress, bool fromUser)
         {
-            _value = _minValue + progress;
+            OnUserValueChanged(((float)progress / (float)precision) - _minValue);
         }
 
         void SeekBar.IOnSeekBarChangeListener.OnStartTrackingTouch(SeekBar seekBar)

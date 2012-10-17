@@ -12,9 +12,9 @@ namespace Android.Dialog
             Lines = 3;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            var view = base.GetView(context, convertView, parent);
+            var view = base.GetViewImpl(context, convertView, parent);
             if (_entry != null)
             {
                 _entry.TextChanged += delegate

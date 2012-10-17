@@ -61,7 +61,7 @@ namespace Android.Dialog
             base.Dispose(disposing);
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             if (scaled == null)
                 scaled = Scale(Value);

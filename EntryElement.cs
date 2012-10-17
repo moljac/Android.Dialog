@@ -8,27 +8,13 @@ using Android.Views.InputMethods;
 
 namespace Android.Dialog
 {
-    public class EntryElement : Element, ITextWatcher
+    public class EntryElement : ValueElement<string>, ITextWatcher
     {
-        public string Value
+        protected override void UpdateDetailDisplay(View cell)
         {
-            get { return _val; }
-            set
-            {
-                if (_entry != null && _val != value)
-                {
-                    _val = value;
-                    if (_entry.Text != value)
-                        _entry.Text = value;
-                    if (Changed != null)
-                        Changed(this, EventArgs.Empty);
-                }
-                else
-                    _val = value;
-            }
+            if (_entry != null && _entry.Text != Value)
+                _entry.Text = Value;
         }
-
-        public event EventHandler Changed;
 
         public EntryElement(string caption, string value)
             : this(caption, value, (int)DroidResources.ElementLayout.dialog_textfieldright)
@@ -93,7 +79,7 @@ namespace Android.Dialog
         protected EditText _entry;
         private string _val;
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             TextView label;
             var view = DroidResources.LoadStringEntryLayout(context, convertView, parent, LayoutId, out label, out _entry);
@@ -174,7 +160,7 @@ namespace Android.Dialog
 
         public void OnTextChanged(Java.Lang.ICharSequence s, int start, int before, int count)
         {
-            Value = s.ToString();
+            OnUserValueChanged(s.ToString());
         }
 
         public void AfterTextChanged(IEditable s)

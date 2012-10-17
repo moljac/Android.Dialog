@@ -1,11 +1,22 @@
 using System;
+using System.Windows.Input;
 using Android.Content;
 using Android.Views;
+using Java.Lang;
+using Object = System.Object;
 
 namespace Android.Dialog
 {
     public abstract class Element : Java.Lang.Object
     {
+        private static int _currentElementID = 1;
+
+        /// <summary>
+        /// An app unique identifier for this element. 
+        /// Note that it is expected that Elements will always created on the UI thread - so no locking is used on CurrentElementID
+        /// </summary>
+        private readonly Java.Lang.Integer _elementID = new Integer(_currentElementID++);
+
         /// <summary>
         ///  Initializes the element with the given caption.
         /// </summary>
@@ -23,12 +34,39 @@ namespace Android.Dialog
             LayoutId = layoutId;
         }
 
+        private string _caption;
+
         /// <summary>
         ///  The caption to display for this given element
         /// </summary>
-        public string Caption { get; set; }
+        public string Caption
+        {
+            get { return _caption; }
+            set { _caption = value; UpdateCaptionDisplay(CurrentAttachedCell); }
+        }
+
+        protected virtual void UpdateCaptionDisplay(View cell)
+        {
+            // by default do nothing!
+        }
+
+        private ICommand _selectedCommand;
+        public ICommand SelectedCommand
+        {
+            get { return _selectedCommand; }
+            set { _selectedCommand = value; }
+        }
 
         public int LayoutId { get; private set; }
+
+        /// <summary>
+        /// Override this method if you want some other action to be taken when
+        /// a cell view is set
+        /// </summary>
+        protected virtual void UpdateCellDisplay(View cell)
+        {
+            UpdateCaptionDisplay(cell);
+        }
 
         /// <summary>
         ///  Handle to the container object.
@@ -75,6 +113,14 @@ namespace Android.Dialog
             return string.Empty;
         }
 
+        public View GetView(Context context, View convertView, ViewGroup parent)
+        {
+            var cell = GetViewImpl(context, convertView, parent);
+            CurrentAttachedCell = cell;
+            UpdateCellDisplay(cell);
+            return cell;
+        }
+
         /// <summary>
         /// Overriden by most derived classes, creates a View with the contents for display
         /// </summary>
@@ -82,9 +128,34 @@ namespace Android.Dialog
         /// <param name="convertView"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public virtual View GetView(Context context, View convertView, ViewGroup parent)
+        protected virtual View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             return LayoutId == 0 ? new View(context) : null;
+        }
+
+        /// <summary>
+        /// The last cell attached to this Element
+        /// Use the Tag property of the Cell to determine of this cell is still attached to this Element
+        /// </summary>
+        private View _lastAttachedCell;
+
+        protected View CurrentAttachedCell
+        {
+            get
+            {
+                if (_lastAttachedCell == null)
+                    return null;
+
+                if (_lastAttachedCell.Tag != _elementID)
+                    _lastAttachedCell = null;
+
+                return _lastAttachedCell;
+            }
+            private set
+            {
+                _lastAttachedCell = value;
+                _lastAttachedCell.Tag = _elementID;
+            }
         }
 
         public virtual void Selected() { }
@@ -113,6 +184,15 @@ namespace Android.Dialog
             set { accessory = value; }
         }
         private UITableViewCellAccessory accessory;
+
+
+        public void ActOnCurrentAttachedCell(Action<View> updateAction)
+        {
+            var cell = CurrentAttachedCell;
+            // note that we call the update action even if the attached cell is null
+            // - as some elements use fixed UIViews (e.g. sliders) which are independent of the cell
+            updateAction(cell);
+        }
 
         #endregion
     }

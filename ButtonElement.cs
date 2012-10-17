@@ -13,7 +13,7 @@ namespace Android.Dialog
             Click = tapped;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             Button button;
             var view = DroidResources.LoadButtonLayout(context, convertView, parent, LayoutId, out button);

@@ -7,7 +7,6 @@ namespace Android.Dialog
 {
     public class WebContentElement : Element
     {
-
         public WebContentElement(string url)
             : base(string.Empty)
         {
@@ -24,7 +23,7 @@ namespace Android.Dialog
 
         public String WebContent { get; set; }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             var webView = new WebView(context);
 

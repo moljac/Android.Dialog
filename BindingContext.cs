@@ -361,7 +361,7 @@ namespace Android.Dialog
                 object obj = dk.Value.Obj;
 
                 if (element is DateTimeElement)
-                    SetValue(mi, obj, ((DateTimeElement)element).DateValue);
+                    SetValue(mi, obj, ((DateTimeElement)element).Value);
                 else if (element is FloatElement)
                     SetValue(mi, obj, ((FloatElement)element).Value);
                 else if (element is BooleanElement)

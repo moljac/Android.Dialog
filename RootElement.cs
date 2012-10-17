@@ -281,7 +281,7 @@ namespace Android.Dialog
             return string.Empty;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             Context = context;
 

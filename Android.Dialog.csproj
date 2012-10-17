@@ -73,6 +73,7 @@
     <Compile Include="RootElement.cs" />
     <Compile Include="Section.cs" />
     <Compile Include="StringElement.cs" />
+    <Compile Include="ValueElement.cs" />
     <Compile Include="ViewElement.cs" />
     <Compile Include="WebContentElement.cs" />
   </ItemGroup>

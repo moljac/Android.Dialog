@@ -41,7 +41,7 @@ namespace Android.Dialog
             AchievementImage = achievementImage;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             View view = DroidResources.LoadAchievementsElementLayout(context, convertView, parent, LayoutId, out _caption, out _description, out _percentageComplete, out _achivementImage);
             if (view != null)
@@ -56,7 +56,7 @@ namespace Android.Dialog
             }
             else
             {
-                Util.Log.Error("AchievementElement", "GetView failed to load template view");
+                Util.Log.Error("AchievementElement", "GetViewImpl failed to load template view");
             }
             return view;
         }

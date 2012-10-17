@@ -5,15 +5,9 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class StringElement : Element
+    public class StringElement : ValueElement<string>
     {
         public int FontSize { get; set; }
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; if (_text != null) _text.Text = _value; }
-        }
-        private string _value;
 
         public object Alignment;
 
@@ -39,7 +33,7 @@ namespace Android.Dialog
             Value = value;
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             var view = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId, out _caption, out _text);
             if (view != null && _caption != null && _text != null)
@@ -76,6 +70,11 @@ namespace Android.Dialog
             _caption = null;
             //_text.Dispose();
             _text = null;
+        }
+
+        protected override void UpdateDetailDisplay(View cell)
+        {
+            _text.Text = Value;
         }
     }
 

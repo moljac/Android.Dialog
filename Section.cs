@@ -161,11 +161,11 @@ namespace Android.Dialog
 
             // bind value changed to our local handler so section itself is aware of events, allows cascacding upward notifications
             if (element is EntryElement)
-                (element as EntryElement).Changed += HandleValueChangedEvent;
+                (element as EntryElement).ValueChanged += HandleValueChangedEvent;
             else if (element is BooleanElement)
-                (element as BooleanElement).Changed += HandleValueChangedEvent;
+                (element as BooleanElement).ValueChanged += HandleValueChangedEvent;
             else if (element is CheckboxElement)
-                (element as CheckboxElement).Changed += HandleValueChangedEvent;
+                (element as CheckboxElement).ValueChanged += HandleValueChangedEvent;
             else if (element is RootElement)
                 (element as RootElement).RadioSelectionChanged += HandleValueChangedEvent;
         }
@@ -317,7 +317,7 @@ namespace Android.Dialog
             get { return ElementTypes.Count; }
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             if (HeaderView != null)
             {

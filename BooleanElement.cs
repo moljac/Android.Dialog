@@ -5,28 +5,12 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public abstract class BoolElement : Element
+    public abstract class BoolElement : ValueElement<bool>
     {
         private bool _val;
 
         public string TextOff { get; set; }
         public string TextOn { get; set; }
-
-        public bool Value
-        {
-            get { return _val; }
-            set
-            {
-                if (_val != value)
-                {
-                    _val = value;
-                    if (Changed != null)
-                        Changed(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public event EventHandler Changed;
 
         public BoolElement(string caption, bool value)
             : base(caption)
@@ -65,7 +49,7 @@ namespace Android.Dialog
         {
         }
 
-        public override View GetView(Context context, View convertView, ViewGroup parent)
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             View toggleButtonView;
             View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId, out _caption, out _subCaption, out toggleButtonView);
@@ -95,6 +79,11 @@ namespace Android.Dialog
             return view;
         }
 
+        protected override void UpdateDetailDisplay(View cell)
+        {
+            _toggleButton.Checked = Value;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (!disposing) return;
@@ -106,7 +95,7 @@ namespace Android.Dialog
 
         public void OnCheckedChanged(CompoundButton buttonView, bool isChecked)
         {
-            Value = isChecked;
+            OnUserValueChanged(isChecked);
         }
 
         public override void Selected()

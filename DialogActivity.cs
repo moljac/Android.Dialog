@@ -29,12 +29,8 @@ namespace Android.Dialog
         {
             foreach (var element in Root.Sections.SelectMany(section => section))
             {
-                if (element is EntryElement)
-                    (element as EntryElement).Changed += eventHandler;
-                if (element is BooleanElement)
-                    (element as BooleanElement).Changed += eventHandler;
-                if (element is CheckboxElement)
-                    (element as CheckboxElement).Changed += eventHandler;
+                if (element is ValueElement)
+                    (element as ValueElement).ValueChanged += eventHandler;
             }
         }
 
