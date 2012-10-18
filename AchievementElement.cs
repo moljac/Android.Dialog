@@ -13,7 +13,7 @@ namespace Android.Dialog
         public string Description
         {
             get { return _description; }
-            set { _description = value; ActOnCurrentAttachedCell(UpdateCellDisplay); }
+            set { _description = value; ActOnCurrentAttachedCell(UpdateDescriptionDisplay); }
         }
 
         private int _percentageComplete;
@@ -21,7 +21,7 @@ namespace Android.Dialog
         public int PercentageComplete
         {
             get { return _percentageComplete; }
-            set { _percentageComplete = value; ActOnCurrentAttachedCell(UpdateCellDisplay); }
+            set { _percentageComplete = value; ActOnCurrentAttachedCell(UpdatePercentageCompleteDisplay); }
         }
 
         private Bitmap _achievementImage;
@@ -29,7 +29,7 @@ namespace Android.Dialog
         public Bitmap AchievementImage
         {
             get { return _achievementImage; }
-            set { _achievementImage = value; ActOnCurrentAttachedCell(UpdateCellDisplay); }
+            set { _achievementImage = value; ActOnCurrentAttachedCell(UpdateAchievementImageDisplay); }
         }
 
         public string Group;
