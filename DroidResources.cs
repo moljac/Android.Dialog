@@ -113,19 +113,19 @@ namespace Android.Dialog
             value = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_ValueField", "id", context.PackageName));
         }
 
-        public static View LoadButtonLayout(Context context, View convertView, ViewGroup parent, int layoutId, out Button button)
+        public static View LoadButtonLayout(Context context, View convertView, ViewGroup parent, int layoutId)
         {
             var layout = convertView ?? LoadLayout(context, parent, layoutId);
-            if (layout != null)
-            {
-                button = layout.FindViewById<Button>(context.Resources.GetIdentifier("dialog_Button", "id", context.PackageName));
-            }
-            else
+            if (layout == null)
             {
                 Log.Error("Android.Dialog", "LoadButtonLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
-                button = null;
             }
             return layout;
+        }
+
+        public static void DecodeButtonLayout(Context context, View layout, out Button button)
+        {
+            button = layout.FindViewById<Button>(context.Resources.GetIdentifier("dialog_Button", "id", context.PackageName));
         }
 
         public static View LoadMultilineElementLayout(Context context, View convertView, ViewGroup parent, int layoutId, out EditText value)
@@ -167,9 +167,8 @@ namespace Android.Dialog
             }
         }
 
-        public static View LoadStringEntryLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView label, out EditText value)
+        public static View DecodeStringEntryLayout(Context context, View layout, out TextView label, out EditText value)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
             if (layout != null)
             {
                 label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
@@ -177,9 +176,18 @@ namespace Android.Dialog
             }
             else
             {
-                Log.Error("Android.Dialog", "LoadStringEntryLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
                 label = null;
                 value = null;
+            }
+            return layout;
+        }
+
+        public static View LoadStringEntryLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        {
+            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            if (layout == null)
+            {
+                Log.Error("Android.Dialog", "LoadStringEntryLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
             }
             return layout;
         }
