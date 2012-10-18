@@ -9,15 +9,15 @@ namespace Android.Dialog
         public int MinuteInterval { get; set; }
         
         public DateTimeElement(string caption, DateTime date)
-            : base(caption)
+            : this(caption, date, (int)DroidResources.ElementLayout.dialog_multiline_labelfieldbelow)
         {
-            Click = delegate { EditDate(); };
         }
 
         public DateTimeElement(string caption, DateTime date, int layoutId)
             : base(caption, layoutId)
         {
             Click = delegate { EditDate(); };
+            Value = date;
         }
 
         protected override string Format(DateTime dt)
