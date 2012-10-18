@@ -84,12 +84,9 @@ namespace Android.Dialog
             EditText _entry;
             DroidResources.DecodeStringEntryLayout(Context, cell, out label, out _entry);
 
-            if (label == null)
+            if (label != null)
             {
-                _entry.Hint = Caption;
-            }
-            else
-            {
+                // note - Caption and Hint are no longer interchanged!
                 label.Text = Caption;
             }
         }
@@ -110,7 +107,7 @@ namespace Android.Dialog
             {
                 _entry.Text = Value;
             }
-            if (label == null && _entry.Hint != Hint)
+            if (_entry.Hint != Hint)
             {
                 _entry.Hint = Hint;
             }
