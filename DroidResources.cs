@@ -136,9 +136,15 @@ namespace Android.Dialog
             return layout;
         }
 
-        public static View LoadBooleanElementLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView label, out TextView subLabel, out View value)
+        public static View LoadBooleanElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
         {
+#warning convertView use here is odd?
             var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            return layout;
+        }
+
+        public static void DecodeBooleanElementLayout(Context context, View layout, out TextView label, out TextView subLabel, out View value)
+        {
             if (layout != null)
             {
                 label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
@@ -148,12 +154,10 @@ namespace Android.Dialog
             }
             else
             {
-                Log.Error("Android.Dialog", "LoadBooleanElementLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
                 label = null;
                 value = null;
                 subLabel = null;
             }
-            return layout;
         }
 
         public static View LoadStringEntryLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView label, out EditText value)
@@ -207,12 +211,23 @@ namespace Android.Dialog
             return layout;
         }
 
-        public static View LoadAchievementsElementLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView caption, out TextView description, out TextView percentageComplete, out ImageView achivementImage)
+        public static View LoadAchievementsElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
         {
+#warning TODO - how on earth is convertView being used here? It doesn't look right...
             var layout = convertView ?? LoadLayout(context, parent, layoutId);
             if (layout == null)
             {
-                Log.Error("Android.Dialog", "LoadAchievementsElementLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog",
+                          "LoadAchievementsElementLayout: Failed to load resource: " +
+                          layoutId.ToString(CultureInfo.InvariantCulture));
+            }
+            return layout;
+        }
+
+        public static View DecodeAchievementsElementLayout(Context context, View layout, out TextView caption, out TextView description, out TextView percentageComplete, out ImageView achivementImage)
+        {
+            if (layout == null)
+            {
                 achivementImage = null;
                 caption = null;
                 description = null;

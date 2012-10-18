@@ -7,12 +7,6 @@ namespace Android.Dialog
 {
     public class CheckboxElement : BoolElement, CompoundButton.IOnCheckedChangeListener
     {
-        protected override void UpdateDetailDisplay(View cell)
-        {
-            if (_checkbox != null && _checkbox.Checked != Value)
-                _checkbox.Checked = Value;
-        }
-
         public string SubCaption { get; set; }
 
         public bool ReadOnly
@@ -20,10 +14,6 @@ namespace Android.Dialog
             get;
             set;
         }
-
-        private CheckBox _checkbox;
-        private TextView _caption;
-        private TextView _subCaption;
 
         public string Group;
 
@@ -60,23 +50,42 @@ namespace Android.Dialog
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             View checkboxView;
-            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId, out _caption, out _subCaption, out checkboxView);
-            if (view != null)
-            {
-                _caption.Text = Caption;
-
-                _checkbox = (CheckBox)checkboxView;
-                _checkbox.SetOnCheckedChangeListener(null);
-                _checkbox.Checked = Value;
-                _checkbox.SetOnCheckedChangeListener(this);
-                _checkbox.Clickable = !ReadOnly;
-
-                if (_subCaption != null)
-                {
-                    _subCaption.Text = SubCaption;
-                }
-            }
+            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId);
             return view;
+        }
+
+        protected override void  UpdateCellDisplay(View cell)
+        {
+            UpdateDetailDisplay(cell);
+ 	        base.UpdateCellDisplay(cell);
+        }
+
+        protected override void UpdateDetailDisplay(View cell)
+        {
+            TextView _caption;
+            TextView _subCaption;
+            View _rawCheckboxView;
+            DroidResources.DecodeBooleanElementLayout(Context, cell, out _caption, out _subCaption, out _rawCheckboxView);
+
+            var _checkbox = (CheckBox)_rawCheckboxView;
+            _checkbox.SetOnCheckedChangeListener(null);
+            _checkbox.Checked = Value;
+            _checkbox.SetOnCheckedChangeListener(this);
+            _checkbox.Clickable = !ReadOnly;
+        }
+
+        protected override void UpdateCaptionDisplay(View cell)
+        {
+            TextView _caption;
+            TextView _subCaption;
+            View _rawCheckboxView;
+            DroidResources.DecodeBooleanElementLayout(Context, cell, out _caption, out _subCaption, out _rawCheckboxView);
+            _caption.Text = Caption;
+
+            if (_subCaption != null)
+            {
+                _subCaption.Text = SubCaption;
+            }
         }
 
         public void OnCheckedChanged(CompoundButton buttonView, bool isChecked)
@@ -86,8 +95,22 @@ namespace Android.Dialog
 
         public override void Selected()
         {
-            if (!ReadOnly)
-                _checkbox.Toggle();
+            if (ReadOnly)
+                return;
+
+            if (CurrentAttachedCell == null)
+            {
+                // how on earth did this happen!
+                return;
+            }
+
+            TextView _caption;
+            TextView _subCaption;
+            View _rawCheckboxView;
+            DroidResources.DecodeBooleanElementLayout(Context, CurrentAttachedCell, out _caption, out _subCaption, out _rawCheckboxView);
+
+            var _checkbox = (CheckBox)_rawCheckboxView;
+            _checkbox.Toggle();
         }
 
         public override string Summary()

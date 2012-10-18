@@ -7,26 +7,22 @@ namespace Android.Dialog
 {
     public abstract class BoolElement : ValueElement<bool>
     {
-        private bool _val;
-
         public string TextOff { get; set; }
         public string TextOn { get; set; }
 
         public BoolElement(string caption, bool value)
             : base(caption)
         {
-            _val = value;
         }
 
         public BoolElement(string caption, bool value, int layoutId)
             : base(caption, layoutId)
         {
-            _val = value;
         }
 
         public override string Summary()
         {
-            return _val ? TextOn : TextOff;
+            return Value ? TextOn : TextOff;
         }
     }
 
@@ -35,10 +31,6 @@ namespace Android.Dialog
     /// </summary>
     public class BooleanElement : BoolElement, CompoundButton.IOnCheckedChangeListener
     {
-        protected ToggleButton _toggleButton;
-        protected TextView _caption;
-        protected TextView _subCaption;
-
         public BooleanElement(string caption, bool value)
             : base(caption, value, (int)DroidResources.ElementLayout.dialog_onofffieldright)
         {
@@ -51,46 +43,54 @@ namespace Android.Dialog
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            View toggleButtonView;
-            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId, out _caption, out _subCaption, out toggleButtonView);
-
-            if (view != null)
-            {
-                _caption.Text = Caption;
-                _toggleButton = (ToggleButton)toggleButtonView;
-                _toggleButton.SetOnCheckedChangeListener(null);
-                _toggleButton.Checked = Value;
-                _toggleButton.SetOnCheckedChangeListener(this);
-
-                if (TextOff != null)
-                {
-                    _toggleButton.TextOff = TextOff;
-                    if (!Value)
-                        _toggleButton.Text = TextOff;
-                }
-
-                if (TextOn != null)
-                {
-                    _toggleButton.TextOn = TextOn;
-                    if (Value)
-                        _toggleButton.Text = TextOn;
-                }
-            }
+            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId);
             return view;
+        }
+
+        protected override void  UpdateCellDisplay(View cell)
+        {
+            UpdateDetailDisplay(cell);
+ 	        base.UpdateCellDisplay(cell);
+        }
+
+        protected override void UpdateCaptionDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            View _rawToggleButton;
+            TextView _caption;
+            TextView _subCaption;
+
+            DroidResources.DecodeBooleanElementLayout(Context, cell, out _caption, out _subCaption, out _rawToggleButton);
+            _caption.Text = Caption;
         }
 
         protected override void UpdateDetailDisplay(View cell)
         {
-            _toggleButton.Checked = Value;
-        }
+            View _rawToggleButton;
+            TextView _caption;
+            TextView _subCaption;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!disposing) return;
-            //_toggleButton.Dispose();
-            _toggleButton = null;
-            //_caption.Dispose();
-            _caption = null;
+            DroidResources.DecodeBooleanElementLayout(Context, cell, out _caption, out _subCaption, out _rawToggleButton);
+            ToggleButton _toggleButton = (ToggleButton)_rawToggleButton;
+            _toggleButton.SetOnCheckedChangeListener(null);
+            _toggleButton.Checked = Value;
+            _toggleButton.SetOnCheckedChangeListener(this);
+
+            if (TextOff != null)
+            {
+                _toggleButton.TextOff = TextOff;
+                if (!Value)
+                    _toggleButton.Text = TextOff;
+            }
+
+            if (TextOn != null)
+            {
+                _toggleButton.TextOn = TextOn;
+                if (Value)
+                    _toggleButton.Text = TextOn;
+            }
         }
 
         public void OnCheckedChanged(CompoundButton buttonView, bool isChecked)
@@ -100,6 +100,19 @@ namespace Android.Dialog
 
         public override void Selected()
         {
+            if (CurrentAttachedCell == null)
+            {
+                // how did this happen?!
+                return;
+            }
+
+            View _rawToggleButton;
+            TextView _caption;
+            TextView _subCaption;
+
+            DroidResources.DecodeBooleanElementLayout(Context, CurrentAttachedCell, out _caption, out _subCaption, out _rawToggleButton);
+            ToggleButton _toggleButton = (ToggleButton)_rawToggleButton;
+
             if (_toggleButton != null)
                 _toggleButton.Toggle();
         }

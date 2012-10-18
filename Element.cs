@@ -113,8 +113,11 @@ namespace Android.Dialog
             return string.Empty;
         }
 
+        protected Context Context { get; private set; }
+
         public View GetView(Context context, View convertView, ViewGroup parent)
         {
+            Context = context;
             var cell = GetViewImpl(context, convertView, parent);
             CurrentAttachedCell = cell;
             UpdateCellDisplay(cell);

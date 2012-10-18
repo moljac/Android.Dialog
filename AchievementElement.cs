@@ -8,28 +8,29 @@ namespace Android.Dialog
 {
     public class AchievementElement : Element
     {
+        private string _description;
+
         public string Description
         {
-            get;
-            set;
+            get { return _description; }
+            set { _description = value; ActOnCurrentAttachedCell(UpdateCellDisplay); }
         }
+
+        private int _percentageComplete;
 
         public int PercentageComplete
         {
-            get;
-            set;
+            get { return _percentageComplete; }
+            set { _percentageComplete = value; ActOnCurrentAttachedCell(UpdateCellDisplay); }
         }
+
+        private Bitmap _achievementImage;
 
         public Bitmap AchievementImage
         {
-            get;
-            set;
+            get { return _achievementImage; }
+            set { _achievementImage = value; ActOnCurrentAttachedCell(UpdateCellDisplay); }
         }
-
-        private ImageView _achivementImage;
-        private TextView _caption;
-        private TextView _description;
-        private TextView _percentageComplete;
 
         public string Group;
 
@@ -41,20 +42,95 @@ namespace Android.Dialog
             AchievementImage = achievementImage;
         }
 
-        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
+        protected override void UpdateCellDisplay(View cell)
         {
-            View view = DroidResources.LoadAchievementsElementLayout(context, convertView, parent, LayoutId, out _caption, out _description, out _percentageComplete, out _achivementImage);
-            if (view != null)
+            UpdateDescriptionDisplay(cell);
+            UpdateAchievementImageDisplay(cell);
+            UpdatePercentageCompleteDisplay(cell);
+            base.UpdateCellDisplay(cell);
+        }
+
+        protected override void UpdateCaptionDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            ImageView achivementImage;
+            TextView caption;
+            TextView description;
+            TextView percentageComplete;
+
+            DroidResources.DecodeAchievementsElementLayout(Context, cell, out caption, out description, out percentageComplete, out achivementImage);
+
+            if (caption != null)
+                caption.Text = Caption;
+        }
+
+        protected virtual void UpdateAchievementImageDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            ImageView achivementImage;
+            TextView caption;
+            TextView description;
+            TextView percentageComplete;
+
+            DroidResources.DecodeAchievementsElementLayout(Context, cell, out caption, out description, out percentageComplete, out achivementImage);
+
+            if (achivementImage != null)
             {
-                _caption.Text = Caption;
-                _description.Text = Description;
-                _percentageComplete.Text = PercentageComplete.ToString(CultureInfo.InvariantCulture);
                 if (AchievementImage != null)
+                    achivementImage.SetImageBitmap(AchievementImage);
+                else
                 {
-                    _achivementImage.SetImageBitmap(AchievementImage);
+                    // TODO! Should clear the image!
                 }
             }
-            else
+        }
+
+        protected virtual void UpdatePercentageCompleteDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            ImageView achivementImage;
+            TextView caption;
+            TextView description;
+            TextView percentageComplete;
+
+            DroidResources.DecodeAchievementsElementLayout(Context, cell, out caption, out description, out percentageComplete, out achivementImage);
+
+            if (percentageComplete != null)
+                percentageComplete.Text = PercentageComplete.ToString(CultureInfo.InvariantCulture);
+        }
+
+        protected virtual void UpdateDescriptionDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            ImageView achivementImage;
+            TextView caption;
+            TextView description;
+            TextView percentageComplete;
+
+            DroidResources.DecodeAchievementsElementLayout(Context, cell, out caption, out description, out percentageComplete, out achivementImage);
+
+            // TODO - this is slow for things which don't need complete rebinding...
+            caption.Text = Caption;
+            description.Text = Description;
+            percentageComplete.Text = PercentageComplete.ToString(CultureInfo.InvariantCulture);
+            if (AchievementImage != null)
+            {
+                achivementImage.SetImageBitmap(AchievementImage);
+            }
+        }
+
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
+        {
+            View view = DroidResources.LoadAchievementsElementLayout(context, convertView, parent, LayoutId);
+            if (view == null)
             {
                 Util.Log.Error("AchievementElement", "GetViewImpl failed to load template view");
             }
