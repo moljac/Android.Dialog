@@ -168,16 +168,6 @@ namespace Android.Dialog
             return Caption != null && Caption.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) != -1;
         }
 
-        public Context GetContext()
-        {
-            var element = this;
-            while (element.Parent != null)
-                element = element.Parent;
-
-            var rootElement = element as RootElement;
-            return rootElement == null ? null : rootElement.Context;
-        }
-
         #region MonoTouch Dialog Mimicry
 
         // Not used in any way, just there to match MT Dialog api.

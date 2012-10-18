@@ -7,6 +7,8 @@ using Uri = Android.Net.Uri;
 
 namespace Android.Dialog
 {
+#warning Not touched this class... need more explanation...
+
     public class HtmlElement : StringElement
     {
         // public string Value;

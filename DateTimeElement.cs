@@ -11,6 +11,8 @@ namespace Android.Dialog
         public DateTimeElement(string caption, DateTime date)
             : this(caption, date, (int)DroidResources.ElementLayout.dialog_multiline_labelfieldbelow)
         {
+            Click = delegate { EditDate(); };
+            Value = date;
         }
 
         public DateTimeElement(string caption, DateTime date, int layoutId)
@@ -27,7 +29,7 @@ namespace Android.Dialog
 
         protected void EditDate()
         {
-            var context = GetContext();
+            var context = Context;
             if (context == null)
             {
                 Util.Log.Warn("DateElement", "No Context for Edit");
@@ -39,7 +41,7 @@ namespace Android.Dialog
 
         protected void EditTime()
         {
-            var context = GetContext();
+            var context = Context;
             if (context == null)
             {
                 Util.Log.Warn("TimeElement", "No Context for Edit");

@@ -160,14 +160,8 @@ namespace Android.Dialog
             element.Parent = this;
 
             // bind value changed to our local handler so section itself is aware of events, allows cascacding upward notifications
-            if (element is EntryElement)
-                (element as EntryElement).ValueChanged += HandleValueChangedEvent;
-            else if (element is BooleanElement)
-                (element as BooleanElement).ValueChanged += HandleValueChangedEvent;
-            else if (element is CheckboxElement)
-                (element as CheckboxElement).ValueChanged += HandleValueChangedEvent;
-            else if (element is RootElement)
-                (element as RootElement).RadioSelectionChanged += HandleValueChangedEvent;
+            if (element is ValueElement)
+                (element as ValueElement).ValueChanged += HandleValueChangedEvent;
         }
 
         /// <summary>Add version that can be used with LINQ</summary>

@@ -7,6 +7,7 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
+#warning Not yet ported - not sure I'd use this version... too hard-coded to ImageViews?
     public class ImageElement : Element
     {
         // Height for rows
@@ -84,7 +85,7 @@ namespace Android.Dialog
 
         private void SelectImage()
         {
-            var activity = (Activity)GetContext();
+            var activity = (Activity)Context;
             var intent = new Intent(Intent.ActionPick, Provider.MediaStore.Images.Media.InternalContentUri);
             activity.StartActivity(intent);
         }

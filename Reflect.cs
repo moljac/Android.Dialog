@@ -2,6 +2,7 @@ using System;
 
 namespace Android.Dialog
 {
+#warning Are these used?
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false)]
     public class EntryAttribute : Attribute
     {

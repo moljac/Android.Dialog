@@ -40,23 +40,27 @@ namespace Android.Dialog
             dialog_html,
         }
 
-        public static View LoadFloatElementLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView label, out SeekBar slider, out ImageView left, out ImageView right)
+        public static View LoadFloatElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
         {
             var layout = convertView ?? LoadLayout(context, parent, layoutId);
-            if (layout != null)
-            {
-                label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
-                slider = layout.FindViewById<SeekBar>(context.Resources.GetIdentifier("dialog_SliderField", "id", context.PackageName));
-                left = layout.FindViewById<ImageView>(context.Resources.GetIdentifier("dialog_ImageLeft", "id", context.PackageName));
-                right = layout.FindViewById<ImageView>(context.Resources.GetIdentifier("dialog_ImageRight", "id", context.PackageName));
-            }
-            else
+            return layout;
+        }
+
+        public static void DecodeFloatElementLayout(Context context, View layout, out TextView label, out SeekBar slider, out ImageView left, out ImageView right)
+        {
+            if (layout == null)
             {
                 label = null;
                 slider = null;
-                left = right = null;
+                left = null;
+                right = null;
+                return;
             }
-            return layout;
+
+            label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
+            slider = layout.FindViewById<SeekBar>(context.Resources.GetIdentifier("dialog_SliderField", "id", context.PackageName));
+            left = layout.FindViewById<ImageView>(context.Resources.GetIdentifier("dialog_ImageLeft", "id", context.PackageName));
+            right = layout.FindViewById<ImageView>(context.Resources.GetIdentifier("dialog_ImageRight", "id", context.PackageName));
         }
 
 
@@ -72,6 +76,7 @@ namespace Android.Dialog
                 }
                 else
                 {
+                    // TODO - could use context.Resources.GetIdentifier() ?
                     // TODO: figure out what context to use to get this right, currently doesn't inflate application resources
                     Log.Info("Android.Dialog", "LoadLayout: Failed to map resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
                 }

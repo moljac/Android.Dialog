@@ -8,33 +8,87 @@ namespace Android.Dialog
 {
     public class FloatElement : ValueElement<float>, SeekBar.IOnSeekBarChangeListener
     {
-#warning Not updated yet - so not working! Also I may have stuffed up the precision code... oops
-
         private const int precision = 10000000;
-        public bool ShowCaption;
-        private float _maxValue, _minValue;
-        SeekBar slider;
 
+        private float _maxValue;
         public float MaxValue
         {
             get { return _maxValue; }
-            set { _maxValue = value; }
+            set { _maxValue = value; ActOnCurrentAttachedCell(UpdateDetailDisplay); }
         }
 
+        private float _minValue;
         public float MinValue
         {
             get { return _minValue; }
-            set { _minValue = value; }
+            set { _minValue = value; ActOnCurrentAttachedCell(UpdateDetailDisplay); }
         }
+
+        private bool _showCaption;
+        public bool ShowCaption
+        {
+            get { return _showCaption; }
+            set { _showCaption = value; ActOnCurrentAttachedCell(UpdateCaptionDisplay); }
+        }
+
+        public Bitmap Left { get; set; }
+        public Bitmap Right { get; set; }
 
         protected override void UpdateDetailDisplay(View cell)
         {
+            if (cell == null)
+                return;
+
+            TextView label;
+            SeekBar slider;
+            ImageView left;
+            ImageView right;
+            DroidResources.DecodeFloatElementLayout(Context, cell, out label, out slider, out left, out right);
+            if (left != null)
+            {
+                if (Left != null)
+                    left.SetImageBitmap(Left);
+                else
+                    left.Visibility = ViewStates.Gone;
+            }
+            if (right != null)
+            {
+                if (Right != null)
+                    right.SetImageBitmap(Right);
+                else
+                    right.Visibility = ViewStates.Gone;
+            }
             if (slider != null)
-                slider.Progress = (int)(Value - _minValue) * precision;
+            {
+                slider.Max = (int) ((_maxValue - _minValue)*precision);
+                slider.Progress = (int) ((Value - _minValue)*precision);
+            }
         }
 
-        public Bitmap Left;
-        public Bitmap Right;
+        protected override void UpdateCellDisplay(View cell)
+        {
+            UpdateDetailDisplay(cell);
+            base.UpdateCellDisplay(cell);
+        }
+
+        protected override void UpdateCaptionDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            TextView label;
+            SeekBar slider;
+            ImageView left;
+            ImageView right;
+            DroidResources.DecodeFloatElementLayout(Context, cell, out label, out slider, out left, out right);
+            if (label != null)
+            {
+                if (ShowCaption)
+                    label.Text = Caption;
+                else
+                    label.Visibility = ViewStates.Gone;
+            }
+        }
 
         public FloatElement(string caption)
             : this(caption, (int)DroidResources.ElementLayout.dialog_floatimage)
@@ -63,44 +117,22 @@ namespace Android.Dialog
             Left = left;
             Right = right;
             MinValue = 0;
-            MaxValue = precision;
+            MaxValue = 1;
             Value = value;
         }
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            TextView label;
-            ImageView left;
-            ImageView right;
-
-            View view = DroidResources.LoadFloatElementLayout(context, convertView, parent, LayoutId, out label, out slider, out left, out right);
+            View view = DroidResources.LoadFloatElementLayout(context, convertView, parent, LayoutId);
 
             if (view != null)
             {
-                if (left != null)
-                {
-                    if (Left != null)
-                        left.SetImageBitmap(Left);
-                    else
-                        left.Visibility = ViewStates.Gone;
-                }
-                if (right != null)
-                {
-                    if (Right != null)
-                        right.SetImageBitmap(Right);
-                    else
-                        right.Visibility = ViewStates.Gone;
-                }
-                slider.Max = (int)(_maxValue - _minValue) * precision;
-                slider.Progress = (int)(Value - _minValue) * precision;
+                TextView label;
+                SeekBar slider;
+                ImageView left;
+                ImageView right;
+                DroidResources.DecodeFloatElementLayout(Context, view, out label, out slider, out left, out right);
                 slider.SetOnSeekBarChangeListener(this);
-                if (label != null)
-                {
-                    if (ShowCaption)
-                        label.Text = Caption;
-                    else
-                        label.Visibility = ViewStates.Gone;
-                }
             }
             else
             {

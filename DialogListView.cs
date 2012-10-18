@@ -12,7 +12,6 @@ namespace Android.Dialog
             get { return _dialogAdapter == null ? null : _dialogAdapter.Root; }
             set
             {
-                value.Context = Context;
                 value.ValueChanged -= HandleValueChangedEvent;
                 value.ValueChanged += HandleValueChangedEvent;
 

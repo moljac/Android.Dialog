@@ -15,7 +15,6 @@ namespace Android.Dialog
         {
             _context = context;
             _root = root;
-            Root.Context = _context;
 
             // This is only really required when using a DialogAdapter with a ListView, in a non DialogActivity based activity.
             List = listView;

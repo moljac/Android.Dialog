@@ -9,18 +9,9 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class RootElement : Element, IEnumerable<Section>, IDialogInterfaceOnClickListener
+#warning Really want to Split apart the static RootElement from the RadioGroupElement!
+    public class RootElement : StringDisplayingValueElement<string>, IEnumerable<Section>, IDialogInterfaceOnClickListener
     {
-#warning This class does not work!
-#warning This class does not work!
-#warning This class does not work!
-#warning This class does not work!
-#warning This class does not work!
-
-        TextView _caption;
-        TextView _value;
-
-
         internal Group _group;
         public bool UnevenRows;
         public Func<RootElement, View> _createOnSelected;
@@ -36,6 +27,7 @@ namespace Android.Dialog
             : base(caption, (int)DroidResources.ElementLayout.dialog_root)
         {
             Sections = new List<Section>();
+            Click = (o, e) => SelectRadio();
         }
 
         /// <summary>
@@ -51,8 +43,11 @@ namespace Android.Dialog
         {
             this._createOnSelected = createOnSelected;
             Sections = new List<Section>();
+            Click = (o, e) => SelectRadio();
         }
 
+#warning is this one dead?
+#if false
         /// <summary>
         ///   Initializes a RootElement with a caption with a summary fetched from the specified section and leement
         /// </summary>
@@ -68,7 +63,10 @@ namespace Android.Dialog
         public RootElement(string caption, int section, int element)
             : base(caption, (int)DroidResources.ElementLayout.dialog_root)
         {
+            Sections = new List<Section>();
+            Click = (o, e) => SelectRadio();
         }
+#endif
 
         /// <summary>
         /// Initializes a RootElement that renders the summary based on the radio settings of the contained elements. 
@@ -84,12 +82,20 @@ namespace Android.Dialog
             : base(caption, (int)DroidResources.ElementLayout.dialog_root)
         {
             this._group = group;
+            Sections = new List<Section>();
+            Click = (o, e) => SelectRadio();
         }
 
-        /// <summary>
-        /// Single save point for a context, elements can get this context via GetContext() for navigation operations
-        /// </summary>
-        public Context Context { get; set; }
+        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
+        {
+            RefreshValue();
+            return base.GetViewImpl(context, convertView, parent);
+        }
+
+        private void RefreshValue()
+        {
+            Value = GetSelectedValue() ?? Caption;
+        }
 
         internal List<Section> Sections = new List<Section>();
 
@@ -109,12 +115,9 @@ namespace Android.Dialog
             }
         }
 
-        public event EventHandler ValueChanged;
-
         private void HandleValueChangedEvent(object sender, EventArgs args)
         {
-            if (ValueChanged != null)
-                ValueChanged(sender, args);
+            base.FireValueChanged();
         }
 
         internal int IndexOf(Section target)
@@ -161,6 +164,7 @@ namespace Android.Dialog
             Sections.Add(section);
             section.Parent = this;
             section.ValueChanged += HandleValueChangedEvent;
+            ActOnCurrentAttachedCell(UpdateDetailDisplay);
         }
 
         //
@@ -206,6 +210,8 @@ namespace Android.Dialog
                 s.ValueChanged += HandleValueChangedEvent;
                 Sections.Insert(pos++, s);
             }
+
+            ActOnCurrentAttachedCell(UpdateDetailDisplay);
         }
 
         /// <summary>
@@ -217,6 +223,7 @@ namespace Android.Dialog
                 return;
 
             Sections.RemoveAt(idx);
+            ActOnCurrentAttachedCell(UpdateDetailDisplay);
         }
 
         public void Remove(Section s)
@@ -227,6 +234,7 @@ namespace Android.Dialog
             if (idx == -1)
                 return;
             RemoveAt(idx);
+            ActOnCurrentAttachedCell(UpdateDetailDisplay);
         }
 
         public void Clear()
@@ -234,13 +242,13 @@ namespace Android.Dialog
             foreach (var s in Sections)
                 s.Dispose();
             Sections = new List<Section>();
+            ActOnCurrentAttachedCell(UpdateDetailDisplay);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                Context = null;
                 if (Sections == null)
                     return;
                 Clear();
@@ -287,63 +295,18 @@ namespace Android.Dialog
             return string.Empty;
         }
 
-        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
+        protected override string  Format(string value)
         {
-            Context = context;
-
-            View cell = new TextView(context) { TextSize = 16f, Text = Caption };
-            var radio = _group as RadioGroup;
-
-            if (radio != null)
-            {
-                var radioValue = GetSelectedValue();
-                cell = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId);
-                if (cell != null)
-                {
-                    TextView _caption;
-                    TextView _value;
-                    DroidResources.DecodeStringElementLayout(context, cell, out _caption, out _value);
-                    _caption.Text = Caption;
-                    _value.Text = radioValue;
-                    Click = (o, e) => SelectRadio();
-                }
-            }
-            //else if (_group != null)
-            //{
-            //    int count = 0;
-            //    foreach (var s in Sections)
-            //    {
-            //        foreach (var e in s.Elements)
-            //        {
-            //            var ce = e as CheckboxElement;
-            //            if (ce != null)
-            //            {
-            //                if (ce.Value)
-            //                    count++;
-            //                continue;
-            //            }
-            //            var be = e as BoolElement;
-            //            if (be == null) continue;
-            //            if (be.Value)
-            //                count++;
-            //        }
-            //    }
-            //    cell.DetailTextLabel.Text = count.ToString();
-            //}
-            //else if (_summarySection != -1 && _summarySection < Sections.Count)
-            //{
-            //    var s = Sections[_summarySection];
-            //    if (summaryElement < s.Elements.Count)
-            //        cell.DetailTextLabel.Text = s.Elements[summaryElement].Summary();
-            //}
-            //cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-
-            return cell;
+            return value;
         }
-
 
         public void SelectRadio()
         {
+            var radio = _group as RadioGroup;
+
+            if (radio == null)
+                return;
+
             var dialog = new AlertDialog.Builder(Context);
             dialog.SetSingleChoiceItems(Sections.SelectMany(s => s).OfType<RadioElement>().Select(e => e.Summary()).ToArray(), RadioSelected, this);
             dialog.SetTitle(Caption);
@@ -357,10 +320,7 @@ namespace Android.Dialog
             {
                 RadioSelected = which;
                 var radioValue = GetSelectedValue();
-                _value.Text = radioValue;
-
-                if (RadioSelectionChanged != null)
-                    RadioSelectionChanged(this, EventArgs.Empty);
+                OnUserValueChanged(radioValue);
             }
 
             dialog.Dismiss();
