@@ -62,6 +62,9 @@ namespace Android.Dialog
 
         protected override void UpdateDetailDisplay(View cell)
         {
+            if (cell == null)
+                return;
+
             TextView _caption;
             TextView _subCaption;
             View _rawCheckboxView;
@@ -76,6 +79,9 @@ namespace Android.Dialog
 
         protected override void UpdateCaptionDisplay(View cell)
         {
+            if (cell == null)
+                return;
+
             TextView _caption;
             TextView _subCaption;
             View _rawCheckboxView;
