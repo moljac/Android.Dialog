@@ -5,7 +5,7 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class ButtonElement : StringElement, View.IOnClickListener
+    public class ButtonElement : Element, View.IOnClickListener
     {
         public ButtonElement(string caption, EventHandler tapped)
             : base(caption, (int)DroidResources.ElementLayout.dialog_button)
@@ -13,12 +13,24 @@ namespace Android.Dialog
             Click = tapped;
         }
 
+        protected override void UpdateCaptionDisplay(View cell)
+        {
+            if (cell == null)
+                return;
+
+            Button button;
+            DroidResources.DecodeButtonLayout(Context, cell, out button);
+            button.Text = Caption;
+            base.UpdateCaptionDisplay(cell);
+        }
+
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            Button button;
-            var view = DroidResources.LoadButtonLayout(context, convertView, parent, LayoutId, out button);
+            var view = DroidResources.LoadButtonLayout(context, convertView, parent, LayoutId);
             if (view != null)
             {
+                Button button;
+                DroidResources.DecodeButtonLayout(Context, view, out button);
                 button.Text = Caption;
                 button.SetOnClickListener(this);
             }
