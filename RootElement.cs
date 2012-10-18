@@ -11,6 +11,12 @@ namespace Android.Dialog
 {
     public class RootElement : Element, IEnumerable<Section>, IDialogInterfaceOnClickListener
     {
+#warning This class does not work!
+#warning This class does not work!
+#warning This class does not work!
+#warning This class does not work!
+#warning This class does not work!
+
         TextView _caption;
         TextView _value;
 
