@@ -117,10 +117,10 @@ namespace Android.Dialog
             if (Password)
                 inputType |= InputTypes.TextVariationPassword;
 
-            if (_isEmail)
+            if (IsEmail)
                 inputType |= AndroidDialogEnumHelper.KeyboardTypeMap[UIKeyboardType.EmailAddress];
 
-            if (_password)
+            if (Numeric)
                 inputType |= AndroidDialogEnumHelper.KeyboardTypeMap[UIKeyboardType.DecimalPad];
 
             if (Lines > 1)
