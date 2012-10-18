@@ -9,7 +9,7 @@ namespace Android.Dialog
         {
         }
 
-        protected ValueElement(string caption, int layoutId) : base(caption, layoutId)
+        protected ValueElement(string caption, string layoutName) : base(caption, layoutName)
         {
         }
 
@@ -25,12 +25,10 @@ namespace Android.Dialog
 
     public abstract class ValueElement<TValueType> : ValueElement
     {
-        protected ValueElement(string caption) : base(caption)
+        protected ValueElement(string caption, TValueType value, string layoutName)
+            : base(caption, layoutName)
         {
-        }
-
-        protected ValueElement(string caption, int layoutId) : base(caption, layoutId)
-        {
+            _value = value;
         }
 
         public TValueType Value

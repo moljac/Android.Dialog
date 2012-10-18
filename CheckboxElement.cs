@@ -15,42 +15,27 @@ namespace Android.Dialog
             set;
         }
 
-        public string Group;
+        public string Group { get; private set; }
 
-        public CheckboxElement(string caption)
-            : base(caption, false, (int)DroidResources.ElementLayout.dialog_boolfieldright)
+        private static string SelectLayoutName(string layoutName, string subCaption)
         {
+            if (layoutName != null)
+                return layoutName;
 
+            return subCaption == null ? "dialog_boolfieldright" : "dialog_boolfieldsubright";
         }
 
-        public CheckboxElement(string caption, bool value)
-            : base(caption, value, (int)DroidResources.ElementLayout.dialog_boolfieldright)
-        {
-        }
-
-        public CheckboxElement(string caption, bool value, string subCaption, string group)
-            : base(caption, value, (int)DroidResources.ElementLayout.dialog_boolfieldsubright)
+        public CheckboxElement(string caption, bool value = false, string subCaption = null, string group = null, string layoutName = null)
+            : base(caption, value, SelectLayoutName(layoutName, subCaption))
         {
             Group = group;
             SubCaption = subCaption;
         }
 
-        public CheckboxElement(string caption, bool value, string group)
-            : base(caption, value, (int)DroidResources.ElementLayout.dialog_boolfieldright)
-        {
-            Group = group;
-        }
-
-        public CheckboxElement(string caption, bool value, string group, int layoutId)
-            : base(caption, value, layoutId)
-        {
-            Group = group;
-        }
-
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             View checkboxView;
-            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId);
+            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutName);
             return view;
         }
 

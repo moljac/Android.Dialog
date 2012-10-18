@@ -17,69 +17,8 @@ namespace Android.Dialog
         public Func<RootElement, View> _createOnSelected;
         public event EventHandler RadioSelectionChanged;
 
-        /// <summary>
-        ///  Initializes a RootSection with a caption
-        /// </summary>
-        /// <param name="caption">
-        ///  The caption to render.
-        /// </param>
-        public RootElement(string caption)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_root)
-        {
-            Sections = new List<Section>();
-            Click = (o, e) => SelectRadio();
-        }
-
-        /// <summary>
-        /// Initializes a RootSection with a caption and a callback that will
-        /// create the nested UIViewController that is activated when the user
-        /// taps on the element.
-        /// </summary>
-        /// <param name="caption">
-        ///  The caption to render.
-        /// </param>
-        public RootElement(string caption, Func<RootElement, View> createOnSelected)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_root)
-        {
-            this._createOnSelected = createOnSelected;
-            Sections = new List<Section>();
-            Click = (o, e) => SelectRadio();
-        }
-
-#warning is this one dead?
-#if false
-        /// <summary>
-        ///   Initializes a RootElement with a caption with a summary fetched from the specified section and leement
-        /// </summary>
-        /// <param name="caption">
-        /// The caption to render cref="System.String"/>
-        /// </param>
-        /// <param name="section">
-        /// The section that contains the element with the summary.
-        /// </param>
-        /// <param name="element">
-        /// The element index inside the section that contains the summary for this RootSection.
-        /// </param>
-        public RootElement(string caption, int section, int element)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_root)
-        {
-            Sections = new List<Section>();
-            Click = (o, e) => SelectRadio();
-        }
-#endif
-
-        /// <summary>
-        /// Initializes a RootElement that renders the summary based on the radio settings of the contained elements. 
-        /// </summary>
-        /// <param name="caption">
-        /// The caption to ender
-        /// </param>
-        /// <param name="group">
-        /// The group that contains the checkbox or radio information.  This is used to display
-        /// the summary information when a RootElement is rendered inside a section.
-        /// </param>
-        public RootElement(string caption, Group group)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_root)
+        public RootElement(string caption = null, Group group = null, string layoutRoot = null)
+            : base(caption, null, layoutRoot ?? "dialog_root")
         {
             this._group = group;
             Sections = new List<Section>();

@@ -10,13 +10,8 @@ namespace Android.Dialog
         public string TextOff { get; set; }
         public string TextOn { get; set; }
 
-        public BoolElement(string caption, bool value)
-            : base(caption)
-        {
-        }
-
-        public BoolElement(string caption, bool value, int layoutId)
-            : base(caption, layoutId)
+        protected BoolElement(string caption, bool value, string layoutName=null)
+            : base(caption, value, layoutName)
         {
         }
 
@@ -31,19 +26,14 @@ namespace Android.Dialog
     /// </summary>
     public class BooleanElement : BoolElement, CompoundButton.IOnCheckedChangeListener
     {
-        public BooleanElement(string caption, bool value)
-            : base(caption, value, (int)DroidResources.ElementLayout.dialog_onofffieldright)
-        {
-        }
-
-        public BooleanElement(string caption, bool value, int layoutId)
-            : base(caption, value, layoutId)
+        public BooleanElement(string caption = null, bool value = false, string layoutName = null)
+            : base(caption, value, layoutName ?? "dialog_onofffieldright")
         {
         }
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutId);
+            View view = DroidResources.LoadBooleanElementLayout(context, convertView, parent, LayoutName);
             return view;
         }
 

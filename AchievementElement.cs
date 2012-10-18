@@ -35,7 +35,7 @@ namespace Android.Dialog
         public string Group;
 
         public AchievementElement(string caption, string description, int percentageComplete, Bitmap achievementImage)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_achievements)
+            : base(caption, "dialog_achievements")
         {
             Description = description;
             PercentageComplete = percentageComplete;
@@ -129,7 +129,7 @@ namespace Android.Dialog
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            View view = DroidResources.LoadAchievementsElementLayout(context, convertView, parent, LayoutId);
+            View view = DroidResources.LoadAchievementsElementLayout(context, convertView, parent, LayoutName);
             if (view == null)
             {
                 Util.Log.Error("AchievementElement", "GetViewImpl failed to load template view");

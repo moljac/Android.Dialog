@@ -141,22 +141,10 @@ namespace Android.Dialog
             _entry.InputType = inputType;
         }
 
-        public EntryElement(string caption, string value)
-            : this(caption, value, (int)DroidResources.ElementLayout.dialog_textfieldright)
-        {
-        }
-
-        public EntryElement(string caption, string hint, string value)
-            : this(caption, value)
+        public EntryElement(string caption = null, string hint = null, string value = null, string layoutName = null)
+            : base(caption, value, layoutName ?? "dialog_textfieldright")
         {
             Hint = hint;
-        }
-
-        public EntryElement(string caption, string value, int layoutId)
-            : base(caption, layoutId)
-        {
-            Value = value;
-            Lines = 1;
         }
 
         public override string Summary()
@@ -220,7 +208,7 @@ namespace Android.Dialog
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            var view = DroidResources.LoadStringEntryLayout(context, convertView, parent, LayoutId);
+            var view = DroidResources.LoadStringEntryLayout(context, convertView, parent, LayoutName);
             if (view != null)
             {
                 view.FocusableInTouchMode = false;

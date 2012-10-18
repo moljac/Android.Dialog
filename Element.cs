@@ -28,10 +28,10 @@ namespace Android.Dialog
             Caption = caption;
         }
 
-        public Element(string caption, int layoutId)
+        public Element(string caption, string layoutName)
         {
             Caption = caption;
-            LayoutId = layoutId;
+            LayoutName = layoutName;
         }
 
         private string _caption;
@@ -57,7 +57,7 @@ namespace Android.Dialog
             set { _selectedCommand = value; }
         }
 
-        public int LayoutId { get; private set; }
+        public string LayoutName { get; private set; }
 
         /// <summary>
         /// Override this method if you want some other action to be taken when
@@ -133,7 +133,7 @@ namespace Android.Dialog
         /// <returns></returns>
         protected virtual View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            return LayoutId == 0 ? new View(context) : null;
+            throw new NotImplementedException("GetViewImpl should be implemented in derived Element classes"); 
         }
 
         /// <summary>

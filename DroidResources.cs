@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using Android.Content;
 using Android.Util;
 using Android.Views;
@@ -11,38 +12,16 @@ namespace Android.Dialog
 {
     public static class DroidResources
     {
-        public enum ElementLayout
+        private static Type _resourceLayoutType;
+
+        public static void Initialise(Type resourceLayoutType)
         {
-            dialog_achievements,
-            dialog_boolfieldleft,
-            dialog_boolfieldright,
-            dialog_boolfieldsubleft,
-            dialog_boolfieldsubright,
-
-            dialog_button,
-            dialog_datefield,
-            dialog_fieldsetlabel,
-            dialog_labelfieldbelow,
-            dialog_labelfieldright,
-            dialog_onofffieldright,
-            dialog_panel,
-            dialog_root,
-            dialog_selectlist,
-            dialog_selectlistfield,
-            dialog_textarea,
-
-            dialog_floatimage,
-
-            dialog_textfieldbelow,
-            dialog_textfieldright,
-            dialogLS_textfieldbelow_buttonright,
-            dialog_multiline_labelfieldbelow,
-            dialog_html,
+            _resourceLayoutType = resourceLayoutType;
         }
 
-        public static View LoadFloatElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        public static View LoadFloatElementLayout(Context context, View convertView, ViewGroup parent, string layoutName)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             return layout;
         }
 
@@ -63,25 +42,13 @@ namespace Android.Dialog
             right = layout.FindViewById<ImageView>(context.Resources.GetIdentifier("dialog_ImageRight", "id", context.PackageName));
         }
 
-
-        private static View LoadLayout(Context context, ViewGroup parent, int layoutId)
+        public static View LoadLayout(Context context, ViewGroup parent, int resourceId)
         {
             try
             {
                 var inflater = LayoutInflater.FromContext(context);
-                if (_resourceMap.ContainsKey((ElementLayout)layoutId))
-                {
-                    var layoutName = _resourceMap[(ElementLayout)layoutId];
-                    layoutId = context.Resources.GetIdentifier(layoutName, "layout", context.PackageName);
-                }
-                else
-                {
-                    // TODO - could use context.Resources.GetIdentifier() ?
-                    // TODO: figure out what context to use to get this right, currently doesn't inflate application resources
-                    Log.Info("Android.Dialog", "LoadLayout: Failed to map resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
-                }
 
-                return inflater.Inflate(layoutId, parent, false);
+                return inflater.Inflate(resourceId, parent, false);
             }
             catch (InflateException ex)
             {
@@ -94,13 +61,40 @@ namespace Android.Dialog
             return null;
         }
 
-        public static View LoadStringElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        public static View LoadLayout(Context context, ViewGroup parent, string layoutName)
+        {
+            try
+            {
+                if (_resourceLayoutType == null)
+                    throw new Exception("You must call DroidResources.Initialise(Resource.Layout) before using Dialogs");
+
+                // how to get the resources from the elements...
+                var layoutField = _resourceLayoutType.GetField(layoutName);
+                if (layoutField == null)
+                    throw new Exception("Could not find resource field " + layoutName);
+
+                var resourceId = (int)layoutField.GetValue(null);
+
+                return LoadLayout(context, parent, resourceId);
+            }
+            catch (InflateException ex)
+            {
+                Log.Error("Android.Dialog", "Inflate failed: " + ex.Cause.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Android.Dialog", "LoadLayout failed: " + ex.Message);
+            }
+            return null;
+        }
+
+        public static View LoadStringElementLayout(Context context, View convertView, ViewGroup parent, string layoutName)
         {
 #warning ConvertView is unused...
-            var layout = LoadLayout(context, parent, layoutId);
+            var layout = LoadLayout(context, parent, layoutName);
             if (layout == null)
             {
-                Log.Error("Android.Dialog", "LoadStringElementLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "LoadStringElementLayout: Failed to load resource: " + layoutName);
             }
             return layout;
         }
@@ -118,12 +112,12 @@ namespace Android.Dialog
             value = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_ValueField", "id", context.PackageName));
         }
 
-        public static View LoadButtonLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        public static View LoadButtonLayout(Context context, View convertView, ViewGroup parent, string layoutName)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             if (layout == null)
             {
-                Log.Error("Android.Dialog", "LoadButtonLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "LoadButtonLayout: Failed to load resource: " + layoutName);
             }
             return layout;
         }
@@ -133,25 +127,25 @@ namespace Android.Dialog
             button = layout.FindViewById<Button>(context.Resources.GetIdentifier("dialog_Button", "id", context.PackageName));
         }
 
-        public static View LoadMultilineElementLayout(Context context, View convertView, ViewGroup parent, int layoutId, out EditText value)
+        public static View LoadMultilineElementLayout(Context context, View convertView, ViewGroup parent, string layoutName, out EditText value)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             if (layout != null)
             {
                 value = layout.FindViewById<EditText>(context.Resources.GetIdentifier("dialog_ValueField", "id", context.PackageName));
             }
             else
             {
-                Log.Error("Android.Dialog", "LoadMultilineElementLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "LoadMultilineElementLayout: Failed to load resource: " + layoutName);
                 value = null;
             }
             return layout;
         }
 
-        public static View LoadBooleanElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        public static View LoadBooleanElementLayout(Context context, View convertView, ViewGroup parent, string layoutName)
         {
 #warning convertView use here is odd?
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             return layout;
         }
 
@@ -187,34 +181,34 @@ namespace Android.Dialog
             return layout;
         }
 
-        public static View LoadStringEntryLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        public static View LoadStringEntryLayout(Context context, View convertView, ViewGroup parent, string layoutName)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             if (layout == null)
             {
-                Log.Error("Android.Dialog", "LoadStringEntryLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "LoadStringEntryLayout: Failed to load resource: " + layoutName);
             }
             return layout;
         }
 
-        public static View LoadHtmlLayout(Context context, View convertView, ViewGroup parent, int layoutId, out WebView webView)
+        public static View LoadHtmlLayout(Context context, View convertView, ViewGroup parent, string layoutName, out WebView webView)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             if (layout != null)
             {
                 webView = layout.FindViewById<WebView>(context.Resources.GetIdentifier("dialog_HtmlField", "id", context.PackageName));
             }
             else
             {
-                Log.Error("Android.Dialog", "LoadHtmlLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "LoadHtmlLayout: Failed to load resource: " + layoutName);
                 webView = null;
             }
             return layout;
         }
 
-        public static View LoadEntryButtonLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView label, out EditText value, out ImageButton button)
+        public static View LoadEntryButtonLayout(Context context, View convertView, ViewGroup parent, string layoutName, out TextView label, out EditText value, out ImageButton button)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             if (layout != null)
             {
                 label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
@@ -223,7 +217,7 @@ namespace Android.Dialog
             }
             else
             {
-                Log.Error("Android.Dialog", "LoadStringEntryLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "LoadStringEntryLayout: Failed to load resource: " + layoutName);
                 label = null;
                 value = null;
                 button = null;
@@ -231,15 +225,15 @@ namespace Android.Dialog
             return layout;
         }
 
-        public static View LoadAchievementsElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
+        public static View LoadAchievementsElementLayout(Context context, View convertView, ViewGroup parent, string layoutName)
         {
 #warning TODO - how on earth is convertView being used here? It doesn't look right...
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
+            var layout = convertView ?? LoadLayout(context, parent, layoutName);
             if (layout == null)
             {
                 Log.Error("Android.Dialog",
                           "LoadAchievementsElementLayout: Failed to load resource: " +
-                          layoutId.ToString(CultureInfo.InvariantCulture));
+                          layoutName);
             }
             return layout;
         }
@@ -261,55 +255,6 @@ namespace Android.Dialog
                 percentageComplete = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelPercentageField", "id", context.PackageName));
             }
             return layout;
-        }
-
-        private static readonly Dictionary<ElementLayout, string> _resourceMap;
-
-        static DroidResources()
-        {
-            _resourceMap = new Dictionary<ElementLayout, string>
-            {
-                // Label templates
-                { ElementLayout.dialog_labelfieldbelow, "dialog_labelfieldbelow"},
-                { ElementLayout.dialog_labelfieldright, "dialog_labelfieldright"},
-
-                // Boolean and Checkbox templates
-                { ElementLayout.dialog_boolfieldleft, "dialog_boolfieldleft"},
-                { ElementLayout.dialog_boolfieldright, "dialog_boolfieldright"},
-                { ElementLayout.dialog_boolfieldsubleft, "dialog_boolfieldsubleft"},
-                { ElementLayout.dialog_boolfieldsubright, "dialog_boolfieldsubright"},
-                { ElementLayout.dialog_onofffieldright, "dialog_onofffieldright"},
-
-                // Root templates
-                { ElementLayout.dialog_root, "dialog_root"},
-
-                // Entry templates
-                { ElementLayout.dialog_textfieldbelow, "dialog_textfieldbelow"},
-                { ElementLayout.dialog_textfieldright, "dialog_textfieldright"},
-                { ElementLayout.dialogLS_textfieldbelow_buttonright, "dialog_textfieldbelow_buttonright"},
-
-                // Slider
-                { ElementLayout.dialog_floatimage, "dialog_floatimage"},
-
-                // Button templates
-                { ElementLayout.dialog_button, "dialog_button"},
-
-                // Date
-                { ElementLayout.dialog_datefield, "dialog_datefield"},
-
-                //
-                { ElementLayout.dialog_fieldsetlabel, "dialog_fieldsetlabel"},
-
-                { ElementLayout.dialog_panel, "dialog_panel"},
-
-                //
-                { ElementLayout.dialog_selectlist, "dialog_selectlist"},
-                { ElementLayout.dialog_selectlistfield, "dialog_selectlistfield"},
-                { ElementLayout.dialog_textarea, "dialog_textarea"},
-                { ElementLayout.dialog_multiline_labelfieldbelow, "dialog_multiline_labelfieldbelow"},
-                { ElementLayout.dialog_html, "dialog_html"},
-                { ElementLayout.dialog_achievements, "dialog_achievements"},
-            };
         }
     }
 }

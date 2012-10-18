@@ -8,21 +8,36 @@ namespace Android.Dialog
 {
     public class ViewElement : Element
     {
-        public ViewElement(int layout)
-            : base(string.Empty, layout)
-        {
+        private int _layoutId;
 
+        public ViewElement(int layoutId)
+            : base(string.Empty, null)
+        {
+            _layoutId = layoutId;
+        }
+
+        public ViewElement(string layoutName)
+            : base(string.Empty, layoutName)
+        {
         }
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            var view = convertView ?? LayoutInflater.FromContext(context).Inflate(LayoutId, parent, false);
+#warning convertView is junk here?
+            View view;
+            if (_layoutId > 0)
+                view = DroidResources.LoadLayout(context, parent, _layoutId);
+            else
+                view = DroidResources.LoadLayout(context, parent, LayoutName);
+
             if (view == null)
             {
-                Log.Error("Android.Dialog", "ViewElement: Failed to load resource: " + LayoutId.ToString(CultureInfo.InvariantCulture));
+                Log.Error("Android.Dialog", "ViewElement: Failed to load resource: " + LayoutName);
             }
             else if (Populate != null)
+            {
                 Populate(view);
+            }
             return view;
         }
 

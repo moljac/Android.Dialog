@@ -7,19 +7,11 @@ namespace Android.Dialog
     public class DateTimeElement : StringDisplayingValueElement<DateTime>
     {
         public int MinuteInterval { get; set; }
-        
-        public DateTimeElement(string caption, DateTime date)
-            : this(caption, date, (int)DroidResources.ElementLayout.dialog_multiline_labelfieldbelow)
-        {
-            Click = delegate { EditDate(); };
-            Value = date;
-        }
 
-        public DateTimeElement(string caption, DateTime date, int layoutId)
-            : base(caption, layoutId)
+        public DateTimeElement(string caption, DateTime? date, string layoutName = null)
+            : base(caption, date ?? DateTime.Now, layoutName ?? "dialog_multiline_labelfieldbelow")
         {
             Click = delegate { EditDate(); };
-            Value = date;
         }
 
         protected override string Format(DateTime dt)
@@ -78,14 +70,8 @@ namespace Android.Dialog
 
     public class DateElement : DateTimeElement
     {
-        public DateElement(string caption, DateTime date)
-            : base(caption, date)
-        {
-            DateCallback = OnDateSet;
-        }
-
-        public DateElement(string caption, DateTime date, int layoutId)
-            : base(caption, date, layoutId)
+        public DateElement(string caption, DateTime? date, string layoutName = null)
+            : base(caption, date, layoutName)
         {
             DateCallback = OnDateSet;
         }
@@ -98,14 +84,8 @@ namespace Android.Dialog
 
     public class TimeElement : DateTimeElement
     {
-        public TimeElement(string caption, DateTime date)
-            : base(caption, date)
-        {
-            Click = delegate { EditTime(); };
-        }
-
-        public TimeElement(string caption, DateTime date, int layoutId)
-            : base(caption, date, layoutId)
+        public TimeElement(string caption, DateTime? date, string layoutName = null)
+            : base(caption, date, layoutName)
         {
             Click = delegate { EditTime(); };
         }

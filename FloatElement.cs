@@ -90,40 +90,18 @@ namespace Android.Dialog
             }
         }
 
-        public FloatElement(string caption)
-            : this(caption, (int)DroidResources.ElementLayout.dialog_floatimage)
-        {
-            Value = 0;
-            MinValue = 0;
-            MaxValue = 1;
-        }
-
-        public FloatElement(string caption, int layoutId)
-            : base(caption, layoutId)
-        {
-            Value = 0;
-            MinValue = 0;
-            MaxValue = 1;
-        }
-
-        public FloatElement(Bitmap left, Bitmap right, int value)
-            : this(left, right, value, (int)DroidResources.ElementLayout.dialog_floatimage)
-        {
-        }
-
-        public FloatElement(Bitmap left, Bitmap right, int value, int layoutId)
-            : base(string.Empty, layoutId)
+        public FloatElement(string caption = null, Bitmap left = null, Bitmap right = null, float value = 0, string layoutName = null)
+            : base(null, value, layoutName ?? "dialog_floatimage")
         {
             Left = left;
             Right = right;
             MinValue = 0;
             MaxValue = 1;
-            Value = value;
         }
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            View view = DroidResources.LoadFloatElementLayout(context, convertView, parent, LayoutId);
+            View view = DroidResources.LoadFloatElementLayout(context, convertView, parent, LayoutName);
 
             if (view != null)
             {

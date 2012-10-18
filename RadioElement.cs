@@ -15,11 +15,6 @@ namespace Android.Dialog
             Group = group;
         }
 
-        public RadioElement(string caption)
-            : base(caption)
-        {
-        }
-
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
             if (!(((RootElement)Parent.Parent)._group is RadioGroup))

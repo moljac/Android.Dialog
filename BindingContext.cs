@@ -8,6 +8,8 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
+#warning BindingContext is now broken - sorry!
+#if false
     public class BindingContext : IDisposable
     {
         public RootElement Root;
@@ -227,7 +229,7 @@ namespace Android.Dialog
                     }
 
                     if (checkbox)
-                        element = new CheckboxElement(caption, (bool)GetValue(mi, o));
+                        element = new CheckboxElement(caption, value: (bool)GetValue(mi, o));
                     else
                         element = new BooleanElement(caption, (bool)GetValue(mi, o));
                 }
@@ -395,4 +397,5 @@ namespace Android.Dialog
             }
         }
     }
+#endif
 }

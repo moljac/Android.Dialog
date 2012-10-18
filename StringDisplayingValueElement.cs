@@ -7,13 +7,8 @@ namespace Android.Dialog
     {
         public int FontSize { get; set; }
 
-        protected StringDisplayingValueElement(string caption)
-            : base(caption)
-        {
-        }
-
-        protected StringDisplayingValueElement(string caption, int layoutId)
-            : base(caption, layoutId)
+        protected StringDisplayingValueElement(string caption, T value, string layoutName)
+            : base(caption, value, layoutName)
         {
         }
 
@@ -52,7 +47,7 @@ namespace Android.Dialog
 
         protected override Views.View GetViewImpl(Content.Context context, Views.View convertView, Views.ViewGroup parent)
         {
-            var view = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId);
+            var view = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutName);
             if (view != null)
             {
                 if (FontSize > 0)

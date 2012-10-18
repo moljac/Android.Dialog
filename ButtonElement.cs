@@ -7,8 +7,8 @@ namespace Android.Dialog
 {
     public class ButtonElement : Element, View.IOnClickListener
     {
-        public ButtonElement(string caption, EventHandler tapped)
-            : base(caption, (int)DroidResources.ElementLayout.dialog_button)
+        public ButtonElement(string caption = null, EventHandler tapped = null)
+            : base(caption, "dialog_button")
         {
             Click = tapped;
         }
@@ -26,7 +26,7 @@ namespace Android.Dialog
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            var view = DroidResources.LoadButtonLayout(context, convertView, parent, LayoutId);
+            var view = DroidResources.LoadButtonLayout(context, convertView, parent, LayoutName);
             if (view != null)
             {
                 Button button;
