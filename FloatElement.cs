@@ -8,6 +8,8 @@ namespace Android.Dialog
 {
     public class FloatElement : ValueElement<float>, SeekBar.IOnSeekBarChangeListener
     {
+#warning Not updated yet - so not working! Also I may have stuffed up the precision code... oops
+
         private const int precision = 10000000;
         public bool ShowCaption;
         private float _maxValue, _minValue;
