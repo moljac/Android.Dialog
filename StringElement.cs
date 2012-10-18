@@ -5,10 +5,8 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class StringElement : ValueElement<string>
+    public class StringElement : StringDisplayingValueElement<string>
     {
-        public int FontSize { get; set; }
-
         public object Alignment;
 
         public StringElement(string caption)
@@ -33,23 +31,6 @@ namespace Android.Dialog
             Value = value;
         }
 
-        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
-        {
-            var view = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId, out _caption, out _text);
-            if (view != null && _caption != null && _text != null)
-            {
-                _caption.Text = Caption;
-                _caption.Visibility = Caption == null ? ViewStates.Gone : ViewStates.Visible;
-                _text.Text = Value;
-                if (FontSize > 0)
-                {
-                    _caption.TextSize = FontSize;
-                    _text.TextSize = FontSize;
-                }
-            }
-            return view;
-        }
-
         public override string Summary()
         {
             return Value;
@@ -60,21 +41,9 @@ namespace Android.Dialog
             return Value != null && Value.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) != -1 || base.Matches(text);
         }
 
-        protected TextView _caption;
-        protected TextView _text;
-
-        protected override void Dispose(bool disposing)
+        protected override string Format(string value)
         {
-            if (!disposing) return;
-            //_caption.Dispose();
-            _caption = null;
-            //_text.Dispose();
-            _text = null;
-        }
-
-        protected override void UpdateDetailDisplay(View cell)
-        {
-            _text.Text = Value;
+            return value;
         }
     }
 

@@ -72,6 +72,7 @@
     <Compile Include="Reflect.cs" />
     <Compile Include="RootElement.cs" />
     <Compile Include="Section.cs" />
+    <Compile Include="StringDisplayingValueElement.cs" />
     <Compile Include="StringElement.cs" />
     <Compile Include="ValueElement.cs" />
     <Compile Include="ViewElement.cs" />

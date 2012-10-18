@@ -34,6 +34,15 @@ namespace Android.Dialog
         {
             if (Click != null)
                 Click(this, EventArgs.Empty);
+
+            if (SelectedCommand != null)
+            {
+                // TODO should we have a SelectedCommandParameter here?
+                if (SelectedCommand.CanExecute(null))
+                {
+                    SelectedCommand.Execute(null);
+                }
+            }
         }
     }
 }

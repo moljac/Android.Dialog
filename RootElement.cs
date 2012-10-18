@@ -291,9 +291,12 @@ namespace Android.Dialog
             if (radio != null)
             {
                 var radioValue = GetSelectedValue();
-                cell = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId, out _caption, out _value);
+                cell = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId);
                 if (cell != null)
                 {
+                    TextView _caption;
+                    TextView _value;
+                    DroidResources.DecodeStringElementLayout(context, cell, out _caption, out _value);
                     _caption.Text = Caption;
                     _value.Text = radioValue;
                     Click = (o, e) => SelectRadio();

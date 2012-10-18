@@ -89,21 +89,28 @@ namespace Android.Dialog
             return null;
         }
 
-        public static View LoadStringElementLayout(Context context, View convertView, ViewGroup parent, int layoutId, out TextView label, out TextView value)
+        public static View LoadStringElementLayout(Context context, View convertView, ViewGroup parent, int layoutId)
         {
-            var layout = convertView ?? LoadLayout(context, parent, layoutId);
-            if (layout != null)
-            {
-                label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
-                value = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_ValueField", "id", context.PackageName));
-            }
-            else
+#warning ConvertView is unused...
+            var layout = LoadLayout(context, parent, layoutId);
+            if (layout == null)
             {
                 Log.Error("Android.Dialog", "LoadStringElementLayout: Failed to load resource: " + layoutId.ToString(CultureInfo.InvariantCulture));
-                label = null;
-                value = null;
             }
             return layout;
+        }
+
+        public static void DecodeStringElementLayout(Context context, View layout, out TextView label, out TextView value)
+        {
+            if (layout == null)
+            {
+                label = null;
+                value = null;
+                return;
+            }
+
+            label = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_LabelField", "id", context.PackageName));
+            value = layout.FindViewById<TextView>(context.Resources.GetIdentifier("dialog_ValueField", "id", context.PackageName));
         }
 
         public static View LoadButtonLayout(Context context, View convertView, ViewGroup parent, int layoutId, out Button button)

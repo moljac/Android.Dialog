@@ -1,43 +1,13 @@
 ﻿using System;
 using Android.App;
 using Android.Text.Format;
-using Android.Views;
-using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class DateTimeElement : ValueElement<DateTime>
+    public class DateTimeElement : StringDisplayingValueElement<DateTime>
     {
-        protected TextView _caption;
-        protected TextView _text;
-
-        public int FontSize { get; set; }
-
         public int MinuteInterval { get; set; }
-
-        protected override void UpdateDetailDisplay(Views.View cell)
-        {
-            if (_text != null)
-                _text.Text = Format(Value);
-        }
-
-        protected override Views.View GetViewImpl(Content.Context context, Views.View convertView, Views.ViewGroup parent)
-        {
-            var view = DroidResources.LoadStringElementLayout(context, convertView, parent, LayoutId, out _caption, out _text);
-            if (view != null && _caption != null && _text != null)
-            {
-                _caption.Text = Caption;
-                _caption.Visibility = Caption == null ? ViewStates.Gone : ViewStates.Visible;
-                _text.Text = Format(Value);
-                if (FontSize > 0)
-                {
-                    _caption.TextSize = FontSize;
-                    _text.TextSize = FontSize;
-                }
-            }
-            return view;
-        }
-
+        
         public DateTimeElement(string caption, DateTime date)
             : base(caption)
         {
@@ -50,7 +20,7 @@ namespace Android.Dialog
             Click = delegate { EditDate(); };
         }
 
-        public virtual string Format(DateTime dt)
+        protected override string Format(DateTime dt)
         {
             return dt.ToShortDateString() + " " + dt.ToShortTimeString();
         }
@@ -118,7 +88,7 @@ namespace Android.Dialog
             DateCallback = OnDateSet;
         }
 
-        public override string Format(DateTime dt)
+        protected override string Format(DateTime dt)
         {
             return dt.ToShortDateString();
         }
@@ -138,7 +108,7 @@ namespace Android.Dialog
             Click = delegate { EditTime(); };
         }
 
-        public override string Format(DateTime dt)
+        protected override string Format(DateTime dt)
         {
             return dt.ToShortTimeString();
         }
