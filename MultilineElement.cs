@@ -12,18 +12,10 @@ namespace Android.Dialog
             Lines = 3;
         }
 
-        protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
+        public override void OnTextChanged(string newText)
         {
-            var view = base.GetViewImpl(context, convertView, parent);
-            if (_entry != null)
-            {
-                _entry.TextChanged += delegate
-                {
-                    if (MaxLength > 0 && _entry.Text.Length > MaxLength)
-                        _entry.Text = _entry.Text.Substring(0, MaxLength);
-                };
-            }
-            return view;
+            if (MaxLength > 0 && newText.Length > MaxLength)
+                Value = newText.Substring(0, MaxLength);
         }
     }
 }
