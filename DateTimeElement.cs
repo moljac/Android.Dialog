@@ -67,32 +67,4 @@ namespace Android.Dialog
 
         protected EventHandler<DatePickerDialog.DateSetEventArgs> DateCallback = null;
     }
-
-    public class DateElement : DateTimeElement
-    {
-        public DateElement(string caption, DateTime? date, string layoutName = null)
-            : base(caption, date, layoutName)
-        {
-            DateCallback = OnDateSet;
-        }
-
-        protected override string Format(DateTime dt)
-        {
-            return dt.ToShortDateString();
-        }
-    }
-
-    public class TimeElement : DateTimeElement
-    {
-        public TimeElement(string caption, DateTime? date, string layoutName = null)
-            : base(caption, date, layoutName)
-        {
-            Click = delegate { EditTime(); };
-        }
-
-        protected override string Format(DateTime dt)
-        {
-            return dt.ToShortTimeString();
-        }
-    }
 }

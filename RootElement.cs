@@ -9,12 +9,6 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public interface IRootElement
-    {
-        IGroup Group { get; set; }
-        void Add(ISection section);
-    }
-
     public class RootElement : StringDisplayingValueElement<string>, IEnumerable<Section>, IDialogInterfaceOnClickListener, IRootElement
     {
         private Group _group;

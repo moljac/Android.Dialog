@@ -1,8 +1,5 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
+﻿using Android.Content;
 using Android.Views;
-using Android.Webkit;
 using Uri = Android.Net.Uri;
 
 namespace Android.Dialog
@@ -41,24 +38,6 @@ namespace Android.Dialog
             var view = base.GetViewImpl(context, convertView, parent);
             Click = (o, e) => OpenUrl(context);
             return view;
-        }
-    }
-
-    [Activity]
-    public class HtmlActivity : Activity
-    {
-        protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
-
-            string url = Intent.GetStringExtra("URL");
-            Title = Intent.GetStringExtra("Title");
-
-            WebView webview = new WebView(this);
-            webview.Settings.JavaScriptEnabled = true;
-            webview.Settings.BuiltInZoomControls = true;
-            SetContentView(webview);
-            webview.LoadUrl(url);
         }
     }
 }

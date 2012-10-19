@@ -7,10 +7,6 @@ using Object = System.Object;
 
 namespace Android.Dialog
 {
-    public interface IElement
-    {        
-    }
-
     public abstract class Element : Java.Lang.Object, IElement
     {
         private static int _currentElementID = 1;

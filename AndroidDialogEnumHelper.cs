@@ -4,42 +4,6 @@ using Android.Views.InputMethods;
 
 namespace Android.Dialog
 {
-    public enum UITableViewCellAccessory
-    {
-        DisclosureIndicator,
-    }
-
-    public enum UITextFieldViewMode
-    {
-        WhileEditing,
-    }
-
-    public enum UIKeyboardType
-    {
-        Default,
-        NumberPad,
-        DecimalPad,
-        ASCIICapable,
-        EmailAddress,
-        PhonePad,
-        NamePhonePad,
-        NumbersAndPunctuation,
-    }
-
-    public enum UIReturnKeyType
-    {
-        Default,
-        Go,
-        Google,
-        Join,
-        Next,
-        Route,
-        Search,
-        Send,
-        Yahoo,
-        Done,
-    }
-
     public static class AndroidDialogEnumHelper
     {
         public static readonly Dictionary<UIKeyboardType, InputTypes> KeyboardTypeMap = new Dictionary<UIKeyboardType, InputTypes>

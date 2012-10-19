@@ -5,22 +5,6 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public abstract class BoolElement : ValueElement<bool>
-    {
-        public string TextOff { get; set; }
-        public string TextOn { get; set; }
-
-        protected BoolElement(string caption, bool value, string layoutName=null)
-            : base(caption, value, layoutName)
-        {
-        }
-
-        public override string Summary()
-        {
-            return Value ? TextOn : TextOff;
-        }
-    }
-
     /// <summary>
     /// Used to display toggle button on the screen.
     /// </summary>
