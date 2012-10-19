@@ -6,10 +6,10 @@ namespace Android.Dialog
 {
     public class RadioElement : StringElement
     {
-        public string Group;
+        public string Group { get; set; }
         internal int RadioIdx;
 
-        public RadioElement(string caption, string group)
+        public RadioElement(string caption = null, string group = null)
             : base(caption)
         {
             Group = group;
