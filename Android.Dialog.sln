@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cirrious.MvvmCross.Dialog.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "TouchSampleApp\Sample.csproj", "{F6AEFFC5-4807-49A3-83C5-661E655CB59A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Droid", "Droid", "{6E0A4C11-32C3-48CD-ACD2-81DB13A80A3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Touch", "Touch", "{A92B5471-D33F-4F45-B5D6-16126A76CB6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AdHoc|Any CPU = AdHoc|Any CPU
@@ -133,6 +137,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{33044C7B-47A4-4113-A61A-EB429407F818} = {6E0A4C11-32C3-48CD-ACD2-81DB13A80A3C}
+		{62BAEFFF-BBF1-4BFC-BFCB-79BD60184A54} = {6E0A4C11-32C3-48CD-ACD2-81DB13A80A3C}
+		{F073E4F8-E0B6-43E7-84C1-B71AE4BEA0E0} = {A92B5471-D33F-4F45-B5D6-16126A76CB6D}
+		{F6AEFFC5-4807-49A3-83C5-661E655CB59A} = {A92B5471-D33F-4F45-B5D6-16126A76CB6D}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = DialogSampleApp.csproj
