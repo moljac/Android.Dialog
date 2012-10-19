@@ -25,7 +25,7 @@ namespace Android.Dialog
             return subCaption == null ? "dialog_boolfieldright" : "dialog_boolfieldsubright";
         }
 
-        public CheckboxElement(string caption, bool value = false, string subCaption = null, string group = null, string layoutName = null)
+        public CheckboxElement(string caption = null, bool value = false, string subCaption = null, string group = null, string layoutName = null)
             : base(caption, value, SelectLayoutName(layoutName, subCaption))
         {
             Group = group;
