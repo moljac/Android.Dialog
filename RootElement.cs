@@ -9,7 +9,6 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-#warning Really want to Split apart the static RootElement from the RadioGroupElement!
     public class RootElement : StringDisplayingValueElement<string>, IEnumerable<Section>, IDialogInterfaceOnClickListener
     {
         internal Group _group;
@@ -17,7 +16,12 @@ namespace Android.Dialog
         public Func<RootElement, View> _createOnSelected;
         public event EventHandler RadioSelectionChanged;
 
-        public RootElement(string caption = null, Group group = null, string layoutRoot = null)
+        public RootElement()
+            : this(null)
+        {            
+        }
+
+        public RootElement(string caption, Group group = null, string layoutRoot = null)
             : base(caption, null, layoutRoot ?? "dialog_root")
         {
             this._group = group;

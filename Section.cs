@@ -24,6 +24,8 @@ namespace Android.Dialog
     /// </remarks>
     public class Section : Element, IEnumerable<Element>
     {
+#warning More to do here!
+
         public List<Element> Elements = new List<Element>();
 
         private readonly List<string> ElementTypes = new List<string>();

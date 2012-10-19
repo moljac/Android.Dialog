@@ -57,7 +57,7 @@ namespace Android.Dialog
             set { _selectedCommand = value; }
         }
 
-        public string LayoutName { get; private set; }
+        public string LayoutName { get; set; }
 
         /// <summary>
         /// Override this method if you want some other action to be taken when

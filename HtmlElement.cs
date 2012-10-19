@@ -14,13 +14,13 @@ namespace Android.Dialog
         // public string Value;
 
         public HtmlElement(string caption, string url)
-            : base(caption, "dialog_labelfieldright")
+            : base(caption, url, "dialog_labelfieldright")
         {
             Url = Uri.Parse(url);
         }
 
         public HtmlElement(string caption, Uri uri)
-            : base(caption, "dialog_labelfieldright")
+            : base(caption, uri.ToString(), "dialog_labelfieldright")
         {
             Url = uri;
         }
