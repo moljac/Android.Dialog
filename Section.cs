@@ -22,7 +22,14 @@ namespace Android.Dialog
     /// properties, or as ViewElements to be shown (HeaderView and FooterView).   Internally
     /// this uses the same storage, so you can only show one or the other.
     /// </remarks>
-    public class Section : Element, IEnumerable<Element>
+    public interface ISection
+    {
+        IElement HeaderView { get; set; }
+        IElement FooterView { get; set; }
+        void Add(IElement element);
+    }
+
+    public class Section : Element, IEnumerable<Element>, ISection
     {
 #warning More to do here!
 
@@ -109,7 +116,7 @@ namespace Android.Dialog
         /// <summary>
         /// The section's header view.  
         /// </summary>
-        public Element HeaderView
+        public IElement HeaderView
         {
             get { return header as Element; }
             set { header = value; }
@@ -118,7 +125,7 @@ namespace Android.Dialog
         /// <summary>
         /// The section's footer view.
         /// </summary>
-        public Element FooterView
+        public IElement FooterView
         {
             get { return footer as Element; }
             set { footer = value; }
@@ -148,22 +155,26 @@ namespace Android.Dialog
         /// <param name="element">
         /// An element to add to the section.
         /// </param>
-        public void Add(Element element)
+        public void Add(IElement element)
         {
             if (element == null)
                 return;
+
+            var realElement = element as Element;
+            if (realElement == null)
+                throw new ArgumentException("Android needs real Element instances");
 
             var elementType = element.GetType().FullName;
 
             if (!ElementTypes.Contains(elementType))
                 ElementTypes.Add(elementType);
 
-            Elements.Add(element);
-            element.Parent = this;
+            Elements.Add(realElement);
+            realElement.Parent = this;
 
             // bind value changed to our local handler so section itself is aware of events, allows cascacding upward notifications
-            if (element is ValueElement)
-                (element as ValueElement).ValueChanged += HandleValueChangedEvent;
+            if (realElement is ValueElement)
+                (realElement as ValueElement).ValueChanged += HandleValueChangedEvent;
         }
 
         /// <summary>Add version that can be used with LINQ</summary>
@@ -317,7 +328,7 @@ namespace Android.Dialog
         {
             if (HeaderView != null)
             {
-                return HeaderView.GetView(context, convertView, parent);
+                return (HeaderView as Element).GetView(context, convertView, parent);
             }
 
             if (Caption != null)
@@ -348,7 +359,7 @@ namespace Android.Dialog
         {
             if (FooterView != null)
             {
-                return FooterView.GetView(context, convertView, parent); ;
+                return (FooterView as Element).GetView(context, convertView, parent); ;
             }
 
             if (Footer != null)

@@ -9,10 +9,19 @@ using Android.Widget;
 
 namespace Android.Dialog
 {
-    public class RootElement : StringDisplayingValueElement<string>, IEnumerable<Section>, IDialogInterfaceOnClickListener
+    public interface IRootElement
     {
-        internal Group _group;
-        public bool UnevenRows;
+        IGroup Group { get; set; }
+        void Add(ISection section);
+    }
+
+    public class RootElement : StringDisplayingValueElement<string>, IEnumerable<Section>, IDialogInterfaceOnClickListener, IRootElement
+    {
+        private Group _group;
+        public IGroup Group { get { return _group; } set { _group = value as Group; } }
+
+        public bool UnevenRows { get; set; }
+        
         public Func<RootElement, View> _createOnSelected;
         public event EventHandler RadioSelectionChanged;
 
@@ -99,14 +108,18 @@ namespace Android.Dialog
         /// <param name="section">
         /// The section to add, if the root is visible, the section is inserted with no animation
         /// </param>
-        public void Add(Section section)
+        public void Add(ISection section)
         {
             if (section == null)
                 return;
 
-            Sections.Add(section);
-            section.Parent = this;
-            section.ValueChanged += HandleValueChangedEvent;
+            var realSection = section as Section;
+            if (realSection == null)
+                throw new ArgumentException("Android RootElement should be passed a Section!");
+
+            Sections.Add(realSection);
+            realSection.Parent = this;
+            realSection.ValueChanged += HandleValueChangedEvent;
             ActOnCurrentAttachedCell(UpdateDetailDisplay);
         }
 

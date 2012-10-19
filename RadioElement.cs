@@ -17,7 +17,7 @@ namespace Android.Dialog
 
         protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
         {
-            if (!(((RootElement)Parent.Parent)._group is RadioGroup))
+            if (!(((RootElement)Parent.Parent).Group is RadioGroup))
                 throw new Exception("The RootElement's Group is null or is not a RadioGroup");
 
             return base.GetViewImpl(context, convertView, parent);
