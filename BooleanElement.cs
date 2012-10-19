@@ -58,6 +58,9 @@ namespace Android.Dialog
 
         protected override void UpdateDetailDisplay(View cell)
         {
+            if (cell == null)
+                return;
+
             View _rawToggleButton;
             TextView _caption;
             TextView _subCaption;
