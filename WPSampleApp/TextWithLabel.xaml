@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="WPSampleApp.TextWithLabel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    >
+
+    <StackPanel Margin="12">
+        <TextBlock x:Name="CaptionTextBlock" FontSize="{StaticResource PhoneFontSizeNormal}"/>
+        <TextBlock x:Name="TextTextBlock" FontSize="{StaticResource PhoneFontSizeMedium}"/>
+    </StackPanel>
+</UserControl>
