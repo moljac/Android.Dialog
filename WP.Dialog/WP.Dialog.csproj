@@ -53,7 +53,12 @@
     <Compile Include="BoolElement.cs" />
     <Compile Include="ButtonElement.cs" />
     <Compile Include="Element.cs" />
+    <Compile Include="EntryElement.cs" />
+    <Compile Include="Enums\UIKeyboardType.cs" />
+    <Compile Include="Enums\UIReturnKeyType.cs" />
+    <Compile Include="Enums\UITextFieldViewMode.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="Helpers\InputScopeExtensions.cs" />
     <Compile Include="RadioElement.cs" />
     <Compile Include="RootElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +73,7 @@
       <Name>Dialog.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions />

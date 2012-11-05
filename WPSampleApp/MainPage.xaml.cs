@@ -14,6 +14,22 @@ namespace WPSampleApp
             InitializeComponent();
         }
 
+        private void PhoneApplicationPage_Loaded(object s, RoutedEventArgs e)
+        {
+            var parser = new WindowsPhoneElementBuilder();
+
+            var setter = new ExampleActionPropertySetter();
+            setter.Actions["ShowDialogActivity"] = (sender, args) => MessageBox.Show("Button click: ShowDialogActivity");
+            setter.Actions["ShowDialogListViewActivity"] = (sender, args) => MessageBox.Show("Button click: ShowDialogListViewActivity");
+            setter.Actions["ElementTest"] = (sender, args) => MessageBox.Show("Button click: ElementTest");
+            parser.CustomPropertySetters["Action"] = setter;
+            var description = JsonConvert.DeserializeObject<ElementDescription>(JsonText);
+            var root = (RootElement)parser.Build(description);
+
+            LayoutRoot.Children.Add(root.GetView());
+
+
+        }
 
         public static readonly string JsonText = @"
 {
@@ -27,7 +43,7 @@ namespace WPSampleApp
                 {
                     'Key':'String',
                     'Properties':{
-                        'Caption':'Caption field here',
+                        'Caption':'Label',
                         'Value':'Only Element in a Blank Section'
                     }
                 }
@@ -76,25 +92,46 @@ namespace WPSampleApp
                     }
                 }
             ]
+        },
+        {
+            'Properties':{
+                'Header':'Part II'
+            },
+            'Elements':[
+                {
+                    'Key':'String',
+                    'Properties':{
+                        'Caption':'This is the String Element',
+                        'Value':'This is it\'s value'
+                    }
+                },
+                {
+                    'Key':'Checkbox',
+                    'Properties':{
+                        'Caption':'Check this out',
+                        'Value':true
+                    }
+                },
+                {
+                    'Key':'Entry',
+                    'Properties':{
+                        'Caption':'Username',
+                        'Value':'',
+                        'Hint':'Enter Login'
+                    }
+                },
+                {
+                    'Key':'Entry',
+                    'Properties':{
+                        'Caption':'Password',
+                        'Value':'',
+                        'Hint':'Enter Password',
+                        'Password':true
+                    }
+                }
+            ]        
         }
     ]
 }";
-
-        private void PhoneApplicationPage_Loaded(object s, RoutedEventArgs e)
-        {
-            var parser = new WindowsPhoneElementBuilder();
-
-            var setter = new ExampleActionPropertySetter();
-            setter.Actions["ShowDialogActivity"] = (sender, args) => MessageBox.Show("Button click: ShowDialogActivity");
-            setter.Actions["ShowDialogListViewActivity"] = (sender, args) => MessageBox.Show("Button click: ShowDialogListViewActivity");
-            setter.Actions["ElementTest"] = (sender, args) => MessageBox.Show("Button click: ElementTest");
-            parser.CustomPropertySetters["Action"] = setter;
-            var description = JsonConvert.DeserializeObject<ElementDescription>(JsonText);
-            var root = (RootElement)parser.Build(description);
-
-            LayoutRoot.Children.Add(root.GetView());
-
-
-        }
     }
 }

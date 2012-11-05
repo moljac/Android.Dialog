@@ -18,6 +18,9 @@ namespace WP.Dialog
         private object footer;
         private object header;
 
+        private TextBlock _headerTextBlock;
+        private TextBlock _footerTextBlock;
+
         /// <summary>
         ///  Constructs a Section without header or footers and an hidden section block
         /// </summary>
@@ -53,17 +56,6 @@ namespace WP.Dialog
         /// <summary>
         /// Initializes a new instance of the <see cref="Section"/> class.
         /// </summary>
-        /// <param name="header">The header as an <see cref="Element"/>.</param>
-        /// <remarks>The header can be customized as a custom <see cref="View"/> with a <see cref="ViewElement"/></remarks>
-        public Section(Element header)
-            : this()
-        {
-            HeaderView = header;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Section"/> class.
-        /// </summary>
         /// <param name="header">The header, either a <see cref="String"/> for a simple header, or a custom <see cref="Element"/> (likely a <see cref="ViewElement"/>).</param>
         /// <param name="footer">The footer, either a <see cref="String"/> for a simple footer, or a custom <see cref="Element"/> (likely a <see cref="ViewElement"/>).</param>
         public Section(object header, object footer)
@@ -91,23 +83,23 @@ namespace WP.Dialog
             set { footer = value; }
         }
 
-        /// <summary>
-        /// The section's header view.  
-        /// </summary>
-        public Element HeaderView
-        {
-            get { return header as Element; }
-            set { header = value; }
-        }
+        ///// <summary>
+        ///// The section's header view.  
+        ///// </summary>
+        //public Element HeaderView
+        //{
+        //    get { return header as Element; }
+        //    set { header = value; }
+        //}
 
-        /// <summary>
-        /// The section's footer view.
-        /// </summary>
-        public Element FooterView
-        {
-            get { return footer as Element; }
-            set { footer = value; }
-        }
+        ///// <summary>
+        ///// The section's footer view.
+        ///// </summary>
+        //public Element FooterView
+        //{
+        //    get { return footer as Element; }
+        //    set { footer = value; }
+        //}
 
         public int Count
         {
@@ -306,91 +298,24 @@ namespace WP.Dialog
 
         protected override UIElement GetViewImpl()
         {
-            if(_stackPanel == null)
+            if (_stackPanel == null)
             {
                 _stackPanel = new StackPanel();
 
-                if(HeaderView != null)
-                {
-                    _stackPanel.Children.Add(HeaderView.GetView());
-                }
+                _headerTextBlock = new TextBlock { Text = Header, HorizontalAlignment = HorizontalAlignment.Center};
+                _stackPanel.Children.Add(_headerTextBlock);
 
                 foreach (var element in Elements)
                 {
                     _stackPanel.Children.Add(element.GetView());
                 }
 
-                if(FooterView != null)
-                {
-                    _stackPanel.Children.Add(FooterView.GetView());
-                }
+                _footerTextBlock = new TextBlock { Text = Footer, HorizontalAlignment = HorizontalAlignment.Center };
+                _stackPanel.Children.Add(_footerTextBlock);
             }
 
             return _stackPanel;
         }
-
-        //protected override View GetViewImpl(Context context, View convertView, ViewGroup parent)
-        //{
-        //    if (HeaderView != null)
-        //    {
-        //        return (HeaderView as Element).GetView(context, convertView, parent);
-        //    }
-
-        //    if (Caption != null)
-        //    {
-        //        var view = (convertView as TextView) ?? new TextView(context, null, Resource.Attribute.ListSeparatorTextViewStyle);
-        //        if (Caption.Length >= 0)
-        //        {
-        //            view.Text = Caption;
-        //            view.Visibility = ViewStates.Visible;
-        //        }
-        //        else
-        //        {
-        //            view.Text = string.Empty;
-        //            view.Visibility = ViewStates.Visible;
-        //        }
-        //        return view;
-        //    }
-
-        //    // invisible/empty section header, could be re-shown by setting the caption and refreshing the list
-        //    return new View(context, null)
-        //    {
-        //        LayoutParameters = new ListView.LayoutParams(ListView.LayoutParams.FillParent, 0),
-        //        Visibility = ViewStates.Gone,
-        //    };
-        //}
-
-        //public View GetFooterView(Context context, View convertView, ViewGroup parent)
-        //{
-        //    if (FooterView != null)
-        //    {
-        //        return (FooterView as Element).GetView(context, convertView, parent); ;
-        //    }
-
-        //    if (Footer != null)
-        //    {
-        //        var view = (convertView as TextView) ?? new TextView(context);
-        //        view.Gravity = GravityFlags.Center;
-        //        if (Caption.Length >= 0)
-        //        {
-        //            view.Text = Footer;
-        //            view.Visibility = ViewStates.Visible;
-        //        }
-        //        else
-        //        {
-        //            view.Text = string.Empty;
-        //            view.Visibility = ViewStates.Visible;
-        //        }
-        //        return view;
-        //    }
-
-        //    // invisible/empty section footer, could be re-shown by setting the footer and refreshing the list
-        //    return new View(context, null)
-        //    {
-        //        LayoutParameters = new ListView.LayoutParams(ListView.LayoutParams.FillParent, 0),
-        //        Visibility = ViewStates.Gone,
-        //    };
-        //}
 
         /// <summary>
         /// Enumerator to get all the elements in the Section.
@@ -414,18 +339,8 @@ namespace WP.Dialog
             return Elements.GetEnumerator();
         }
 
-        IElement ISection.HeaderView
-        {
-            get { return HeaderView; }
-            set { HeaderView = (Element) value; }
-        }
-
-        IElement ISection.FooterView
-        {
-            get { return FooterView; }
-            set { FooterView = (Element)value; }
-
-        }
+        IElement ISection.HeaderView { get; set; }
+        IElement ISection.FooterView { get; set; }
 
         void ISection.Add(IElement element)
         {

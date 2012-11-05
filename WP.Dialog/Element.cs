@@ -48,7 +48,11 @@ namespace WP.Dialog
         /// For sections this points to a RootElement, for every other object this points to a Section and it is null
         /// for the root RootElement.
         /// </remarks>
-        public Element Parent { get; set; }
+        public Element Parent
+        {
+            get { return _parent; }
+            set { _parent = value; }
+        }
 
         /// <summary>
         /// Override for click the click event
@@ -159,6 +163,7 @@ namespace WP.Dialog
             set { accessory = value; }
         }
         private UITableViewCellAccessory accessory;
+        private Element _parent;
 
 
         public void ActOnCurrentAttachedCell(Action updateAction)

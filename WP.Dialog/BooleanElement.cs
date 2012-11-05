@@ -38,7 +38,7 @@ namespace WP.Dialog
 
         protected override void UpdateDetailDisplay()
         {
-            if(_checkBox == null)
+            if (_checkBox == null)
             {
                 return;
             }
@@ -56,4 +56,7 @@ namespace WP.Dialog
             _checkBox.IsChecked = !_checkBox.IsChecked;
         }
     }
+
+    public class CheckboxElement : BooleanElement
+    { }
 }
